@@ -767,6 +767,21 @@
             box-shadow: none;
         }
 
+        .quiz-answer-box.selected {
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+        }
+
+        /* On touch devices we allow selecting even used answers */
+        @media (pointer: coarse) {
+            .quiz-answer-box {
+                cursor: pointer;
+            }
+            .quiz-answer-box.used {
+                cursor: pointer;
+            }
+        }
+
         .quiz-dropped-answer {
             margin-top: 10px;
             padding: 10px;
@@ -1080,6 +1095,7 @@
                 compassionQuizTitle: "What Have You Learned About Compassion?",
                 compassionQuizDescription: "Match each question with the correct answer by dragging the boxes on the right onto the boxes on the left side.",
                 quizDragInstruction: "Each question has one answer",
+                quizTapInstruction: "On mobile: tap an answer, then tap a question to place it (tap again to clear).",
                 quizSubmitBtn: "Submit Answers",
                 quizResultsTitle: "Quiz Results",
                 quizResultsMessage: (correct, total) => `You got ${correct} out of ${total} correct!`,
@@ -1178,6 +1194,7 @@
                 compassionQuizTitle: "Kaj ste se naučili o sočutju?",
                 compassionQuizDescription: "Povežite vsako vprašanje s pravilnim odgovorom tako, da povlečete škatle z desne na škatle, ki se nahajajo na levi strani.",
                 quizDragInstruction: "Vsako vprašanje ima en odgovor",
+                quizTapInstruction: "Na mobilnem: tapnite odgovor, nato tapnite vprašanje, da ga povežete (ponovni tap izbriše).",
                 quizSubmitBtn: "Oddaj odgovore",
                 quizResultsTitle: "Rezultati testa",
                 quizResultsMessage: (correct, total) => `Pravilno ste odgovorili na ${correct} od ${total} vprašanj!`,
@@ -2852,6 +2869,131 @@
         let quizMatches = {}; // Store question index -> answer box id matches
         let quizShuffledQuestions = []; // Store shuffled questions for validation
         let quizAnswerTexts = {}; // Store answer box id -> answer text mapping
+        let quizSelectedAnswerBoxId = null; // For mobile tap-to-match
+
+        function isTouchDevice() {
+            return (
+                (typeof window !== 'undefined' && 'ontouchstart' in window) ||
+                (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0) ||
+                (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(pointer: coarse)').matches)
+            );
+        }
+
+        function clearQuizSelection() {
+            if (!quizSelectedAnswerBoxId) return;
+            const prev = document.getElementById(quizSelectedAnswerBoxId);
+            if (prev) prev.classList.remove('selected');
+            quizSelectedAnswerBoxId = null;
+        }
+
+        function clearQuestionMatch(questionIndex) {
+            const existingAnswerBoxId = quizMatches[questionIndex];
+            if (existingAnswerBoxId) {
+                const existingAnswerBox = document.getElementById(existingAnswerBoxId);
+                if (existingAnswerBox) {
+                    existingAnswerBox.classList.remove('used');
+                }
+                delete quizMatches[questionIndex];
+            }
+
+            const questionBox = document.getElementById(`question-${questionIndex}`);
+            if (questionBox) questionBox.classList.remove('has-answer');
+            const answerDiv = document.getElementById(`answer-${questionIndex}`);
+            if (answerDiv) {
+                answerDiv.textContent = '';
+                answerDiv.style.display = 'none';
+            }
+        }
+
+        function findQuestionIndexForAnswer(answerBoxId) {
+            const keys = Object.keys(quizMatches);
+            for (const qIndex of keys) {
+                if (quizMatches[qIndex] === answerBoxId) return parseInt(qIndex);
+            }
+            return null;
+        }
+
+        function assignAnswerToQuestion(questionIndex, answerBoxId) {
+            const answerBox = document.getElementById(answerBoxId);
+            if (!answerBox) return;
+
+            // If this answer is already used elsewhere, free it first (allows moving answers)
+            const existingQuestionForAnswer = findQuestionIndexForAnswer(answerBoxId);
+            if (existingQuestionForAnswer !== null && existingQuestionForAnswer !== questionIndex) {
+                clearQuestionMatch(existingQuestionForAnswer);
+            }
+
+            // Remove previous answer from this question if exists
+            if (quizMatches[questionIndex] && quizMatches[questionIndex] !== answerBoxId) {
+                clearQuestionMatch(questionIndex);
+            }
+
+            // Mark answer as used + store match
+            answerBox.classList.add('used');
+            quizMatches[questionIndex] = answerBoxId;
+
+            // Update question UI
+            const questionBox = document.getElementById(`question-${questionIndex}`);
+            if (questionBox) questionBox.classList.add('has-answer');
+            const answerDiv = document.getElementById(`answer-${questionIndex}`);
+            const answerText = quizAnswerTexts[answerBoxId];
+            if (answerDiv) {
+                answerDiv.textContent = answerText;
+                answerDiv.style.display = 'block';
+            }
+        }
+
+        function setupQuizTapToMatch() {
+            if (!isTouchDevice()) return;
+            const t = translations[currentLanguage];
+
+            // Show mobile instruction
+            const tapInstructionEl = document.getElementById('quizTapInstruction');
+            if (tapInstructionEl) {
+                tapInstructionEl.textContent = t.quizTapInstruction;
+                tapInstructionEl.style.display = 'block';
+            }
+
+            // Disable native drag on touch devices to avoid “stuck” drag states
+            document.querySelectorAll('.quiz-answer-box').forEach((el) => {
+                el.setAttribute('draggable', 'false');
+            });
+
+            // Tap answer to select
+            document.querySelectorAll('.quiz-answer-box').forEach((el) => {
+                el.addEventListener('click', () => {
+                    const id = el.id;
+                    if (quizSelectedAnswerBoxId === id) {
+                        clearQuizSelection();
+                        return;
+                    }
+                    clearQuizSelection();
+                    quizSelectedAnswerBoxId = id;
+                    el.classList.add('selected');
+                });
+            });
+
+            // Tap question to place selected answer (or clear if already filled and nothing selected)
+            document.querySelectorAll('.quiz-question-box').forEach((el) => {
+                const id = el.id; // question-<index>
+                const idxStr = id.split('-')[1];
+                const qIndex = parseInt(idxStr);
+                el.addEventListener('click', () => {
+                    if (Number.isNaN(qIndex)) return;
+
+                    if (quizSelectedAnswerBoxId) {
+                        assignAnswerToQuestion(qIndex, quizSelectedAnswerBoxId);
+                        clearQuizSelection();
+                        return;
+                    }
+
+                    // No selection: tap a filled question to clear it
+                    if (quizMatches[qIndex]) {
+                        clearQuestionMatch(qIndex);
+                    }
+                });
+            });
+        }
 
         function showCompassionQuiz() {
             const t = translations[currentLanguage];
@@ -2892,6 +3034,7 @@
                 <div class="quiz-description">
                     <p>${t.compassionQuizDescription}</p>
                     <p style="margin-top: 10px; font-size: 0.9em; color: #666;">${t.quizDragInstruction}</p>
+                    <p id="quizTapInstruction" style="margin-top: 10px; font-size: 0.9em; color: #666; display: none;"></p>
                 </div>
                 <div class="quiz-container">
                     <div class="quiz-questions-column">
@@ -2922,6 +3065,8 @@
                 </div>
                 <button class="start-game-btn" onclick="submitQuiz()" style="margin-top: 30px;">${t.quizSubmitBtn}</button>
             `;
+
+            setupQuizTapToMatch();
         }
 
         function allowDrop(ev) {
@@ -2940,35 +3085,9 @@
             const answerBox = document.getElementById(answerBoxId);
             
             // Remove dragging class
-            answerBox.classList.remove('dragging');
-            
-            // Check if answer box is already used
-            if (answerBox.classList.contains('used')) {
-                return;
-            }
-            
-            // Remove previous answer if exists
-            if (quizMatches[questionIndex]) {
-                const prevAnswerBoxId = quizMatches[questionIndex];
-                const prevAnswerBox = document.getElementById(prevAnswerBoxId);
-                if (prevAnswerBox) {
-                    prevAnswerBox.classList.remove('used');
-                }
-            }
-            
-            // Mark answer as used
-            answerBox.classList.add('used');
-            
-            // Store match
-            quizMatches[questionIndex] = answerBoxId;
-            
-            // Update question box
-            const questionBox = document.getElementById(`question-${questionIndex}`);
-            questionBox.classList.add('has-answer');
-            const answerDiv = document.getElementById(`answer-${questionIndex}`);
-            const answerText = quizAnswerTexts[answerBoxId];
-            answerDiv.textContent = answerText;
-            answerDiv.style.display = 'block';
+            if (answerBox) answerBox.classList.remove('dragging');
+
+            assignAnswerToQuestion(questionIndex, answerBoxId);
         }
 
         function submitQuiz() {
