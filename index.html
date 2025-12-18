@@ -1,0 +1,3071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compassion Quest - Build Empathy Through Choices</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item.hidden {
+            display: none;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .scenario {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        .character {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .character-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            margin-right: 20px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .character-info h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .character-info p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .scenario-text {
+            color: #444;
+            line-height: 1.8;
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+
+        .choices {
+            display: grid;
+            gap: 15px;
+        }
+
+        .choice-btn {
+            background: white;
+            border: 2px solid #667eea;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 1em;
+            color: #333;
+        }
+
+        .choice-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .choice-btn:active {
+            transform: translateX(2px);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.positive {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+        }
+
+        .feedback.negative {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            color: #721c24;
+        }
+
+        .feedback.neutral {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .game-over h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .final-score {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .compassion-heart {
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .ok-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 20px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+
+        .ok-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .ok-btn:active {
+            transform: scale(0.98);
+        }
+
+        .skip-btn {
+            background: transparent;
+            border: 2px solid #999;
+            color: #666;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-weight: normal;
+        }
+
+        .skip-btn:hover {
+            background: #f5f5f5;
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .skip-btn:active {
+            transform: scale(0.98);
+        }
+
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            background: white;
+            border: 2px solid #667eea;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .lang-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .lang-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .game-container {
+            position: relative;
+        }
+
+        .tutorial {
+            text-align: center;
+            padding: 40px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .tutorial h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .tutorial-section {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: left;
+            border-left: 5px solid #667eea;
+        }
+
+        .tutorial-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .tutorial-section p {
+            color: #444;
+            line-height: 1.8;
+            font-size: 1.05em;
+            margin-bottom: 10px;
+        }
+
+        .tutorial-section ul {
+            color: #444;
+            line-height: 1.8;
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .tutorial-section li {
+            margin-bottom: 8px;
+        }
+
+        .start-game-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 30px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .start-game-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .start-game-btn:active {
+            transform: scale(0.98);
+        }
+
+        .self-compassion-section {
+            text-align: center;
+            padding: 40px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .self-compassion-section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .self-compassion-content {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: left;
+            border-left: 5px solid #667eea;
+        }
+
+        .self-compassion-content h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .self-compassion-content p {
+            color: #444;
+            line-height: 1.8;
+            font-size: 1.05em;
+            margin-bottom: 10px;
+        }
+
+        .self-compassion-content ul {
+            color: #444;
+            line-height: 1.8;
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .self-compassion-content li {
+            margin-bottom: 8px;
+        }
+
+        .breathing-exercise {
+            text-align: center;
+            padding: 40px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .breathing-exercise h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .breathing-description {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: left;
+            border-left: 5px solid #667eea;
+            color: #444;
+            line-height: 1.8;
+            font-size: 1.05em;
+        }
+
+        .breathing-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 30px auto;
+        }
+
+        .breathing-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 1s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .breathing-circle.inhale {
+            width: 250px;
+            height: 250px;
+            animation: pulse-inhale 4s ease-in-out;
+        }
+
+        .breathing-circle.hold {
+            width: 250px;
+            height: 250px;
+            animation: pulse-hold 7s ease-in-out;
+        }
+
+        .breathing-circle.exhale {
+            width: 100px;
+            height: 100px;
+            animation: pulse-exhale 8s ease-in-out;
+        }
+
+        @keyframes pulse-inhale {
+            0% {
+                width: 100px;
+                height: 100px;
+                opacity: 0.7;
+            }
+            100% {
+                width: 250px;
+                height: 250px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse-hold {
+            0%, 100% {
+                width: 250px;
+                height: 250px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse-exhale {
+            0% {
+                width: 250px;
+                height: 250px;
+                opacity: 1;
+            }
+            100% {
+                width: 100px;
+                height: 100px;
+                opacity: 0.7;
+            }
+        }
+
+        .breathing-counter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4em;
+            font-weight: bold;
+            color: white;
+            z-index: 10;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .breathing-phase {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .breathing-repeat-counter {
+            font-size: 1.2em;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        .breathing-complete {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        .scenarios-complete {
+            text-align: center;
+            padding: 40px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .scenarios-complete h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .scenarios-complete .result-box {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .scenarios-complete .result-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        .scenarios-complete .result-stats div {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .transition-screen {
+            text-align: center;
+            padding: 40px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .transition-screen h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .transition-screen p {
+            font-size: 1.2em;
+            color: #444;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .exercise-section {
+            text-align: center;
+            padding: 40px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .exercise-section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .exercise-description {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: left;
+            border-left: 5px solid #667eea;
+            color: #444;
+            line-height: 1.8;
+            font-size: 1.05em;
+        }
+
+        .exercise-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.05em;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 20px;
+            transition: border-color 0.3s ease;
+        }
+
+        .exercise-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .exercise-textarea::placeholder {
+            color: #999;
+        }
+
+        .quiz-section {
+            text-align: center;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .quiz-description {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+            color: #444;
+            line-height: 1.8;
+        }
+
+        .quiz-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .quiz-questions-column, .quiz-answers-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .quiz-questions-column {
+            align-self: center;
+        }
+
+        .quiz-question-box {
+            background: #f9f9f9;
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+            position: relative;
+        }
+
+        .quiz-question-box.has-answer {
+            border: 3px solid #28a745;
+            background: #d4edda;
+        }
+
+        .quiz-answer-box {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: move;
+            transition: all 0.3s ease;
+            user-select: none;
+            color: #444;
+        }
+
+        .quiz-answer-box:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .quiz-answer-box.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .quiz-answer-box.used {
+            opacity: 0.4;
+            cursor: not-allowed;
+            border-color: #999;
+        }
+
+        .quiz-answer-box.used:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .quiz-dropped-answer {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e7f3ff;
+            border-radius: 5px;
+            color: #004085;
+            font-weight: normal;
+        }
+
+        .quiz-results {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="language-selector">
+            <button class="lang-btn" onclick="setLanguage('en')" id="lang-en">EN</button>
+            <button class="lang-btn active" onclick="setLanguage('sl')" id="lang-sl">SI</button>
+        </div>
+        <h1 id="gameTitle">❤️ Compassion Quest</h1>
+        <p class="subtitle" id="gameSubtitle">Build empathy through meaningful choices</p>
+
+        <div class="stats hidden" id="statsContainer">
+            <div class="stat-item">
+                <div class="stat-label" id="statCompassion">Compassion Score</div>
+                <div class="stat-value" id="compassionScore">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label" id="statLives">Lives Touched</div>
+                <div class="stat-value" id="livesTouched">0</div>
+            </div>
+            <div class="stat-item" id="scenarioStat">
+                <div class="stat-label" id="statScenario">Scenario</div>
+                <div class="stat-value" id="scenarioNumber">1/8</div>
+            </div>
+            <div class="stat-item hidden" id="exercisesStat">
+                <div class="stat-label" id="statExercises">Exercises</div>
+                <div class="stat-value" id="exercisesNumber">0/4</div>
+            </div>
+            <div class="stat-item hidden" id="quizStat">
+                <div class="stat-label" id="statQuiz">Test</div>
+                <div class="stat-value" id="quizNumber">0/1</div>
+            </div>
+        </div>
+
+        <div id="tutorial" class="tutorial">
+            <h2 id="tutorialTitle">Welcome to Compassion Quest</h2>
+            
+            <div class="tutorial-section">
+                <h3 id="tutorialWhatTitle">What is Compassion?</h3>
+                <p id="tutorialWhatText"></p>
+            </div>
+
+            <div class="tutorial-section">
+                <h3 id="tutorialWhyTitle">Why is Compassion Important?</h3>
+                <p id="tutorialWhyText"></p>
+                <ul id="tutorialWhyList"></ul>
+            </div>
+
+            <div class="tutorial-section">
+                <h3 id="tutorialHowTitle">How to Play</h3>
+                <p id="tutorialHowText"></p>
+            </div>
+
+            <button class="start-game-btn" onclick="startGame()" id="startGameBtn">Start Your Journey</button>
+        </div>
+
+        <div class="progress-bar hidden" id="progressBarContainer">
+            <div class="progress-fill" id="progressBar" style="width: 0%">0%</div>
+        </div>
+
+        <div id="gameContent" class="hidden">
+            <div class="scenario" id="scenario">
+                <!-- Scenario content will be dynamically inserted -->
+            </div>
+            <div id="scenariosComplete" class="scenarios-complete hidden">
+                <!-- Scenarios complete content will be dynamically inserted -->
+            </div>
+            <div id="selfCompassionTransition" class="transition-screen hidden">
+                <!-- Transition screen content will be dynamically inserted -->
+            </div>
+            <div id="selfCompassionSection" class="self-compassion-section hidden">
+                <!-- Self-compassion content will be dynamically inserted -->
+            </div>
+            <div id="breathingExercise" class="breathing-exercise hidden">
+                <!-- Breathing exercise content will be dynamically inserted -->
+            </div>
+            <div id="letterExercise" class="exercise-section hidden">
+                <!-- Letter exercise content will be dynamically inserted -->
+            </div>
+            <div id="gratitudeExercise" class="exercise-section hidden">
+                <!-- Gratitude exercise content will be dynamically inserted -->
+            </div>
+            <div id="mantraExercise" class="exercise-section hidden">
+                <!-- Mantra exercise content will be dynamically inserted -->
+            </div>
+            <div id="compassionQuiz" class="quiz-section hidden">
+                <!-- Quiz content will be dynamically inserted -->
+            </div>
+        </div>
+
+        <div id="gameOver" class="game-over hidden">
+            <h2 id="gameOverTitle">🎉 Journey Complete!</h2>
+            <div class="final-score" id="finalScore"></div>
+            <p style="color: #666; margin-bottom: 30px; line-height: 1.8;" id="gameOverMessage">
+                You've completed your compassion quest! Every choice you made had an impact. 
+                Remember, compassion is not just about grand gestures—it's about the small, 
+                everyday acts of kindness that make the world a better place.
+            </p>
+            <button class="restart-btn" onclick="restartGame()" id="restartBtn">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        let compassionScore = 0;
+        let livesTouched = 0;
+        let currentScenario = 0;
+        let gameScenarios = [];
+        let selfCompassionExercise = 0; // 0 = not started, 1 = breathing, 2 = letter, 3 = gratitude, 4 = mantra
+        let quizActive = false;
+        let quizProgress = 0; // 0 = not started, 1 = completed
+        // Load saved language preference or default to Slovenian
+        let currentLanguage = localStorage.getItem('compassionQuestLanguage') || 'sl';
+        const SCENARIOS_PER_GAME = 8;
+
+        // Compassion Quiz Data
+        const compassionQuizData = {
+            en: [
+                {
+                    question: "What is compassion?",
+                    answers: [
+                        "The ability to recognize suffering in others and the genuine desire to help alleviate it",
+                        "Feeling sorry for someone",
+                        "Avoiding difficult situations",
+                        "Being polite to others"
+                    ],
+                    correctIndex: 0
+                },
+                {
+                    question: "What is the difference between compassion and empathy?",
+                    answers: [
+                        "Compassion involves understanding and taking action, while empathy is just feeling what others feel",
+                        "There is no difference",
+                        "Empathy is stronger than compassion",
+                        "Compassion is only for close friends"
+                    ],
+                    correctIndex: 0
+                },
+                {
+                    question: "Why is self-compassion important?",
+                    answers: [
+                        "It helps you recover from setbacks, reduces stress, and improves your ability to care for others",
+                        "It makes you selfish",
+                        "It's not important",
+                        "It only helps with personal problems"
+                    ],
+                    correctIndex: 0
+                },
+                {
+                    question: "Why is gratitude important for compassion?",
+                    answers: [
+                        "Gratitude helps recognize positive aspects of life and cultivates a compassionate mindset",
+                        "Gratitude has nothing to do with compassion",
+                        "Gratitude is only for material things",
+                        "Gratitude makes you less compassionate"
+                    ],
+                    correctIndex: 0
+                }
+            ],
+            sl: [
+                {
+                    question: "Kaj je sočutje?",
+                    answers: [
+                        "Sposobnost prepoznati trpljenje pri drugih in iskrena želja pomagati pri lajšanju le-tega",
+                        "Obžalovanje nekoga",
+                        "Izogibanje težavnim situacijam",
+                        "Biti vljuden do drugih"
+                    ],
+                    correctIndex: 0
+                },
+                {
+                    question: "Kakšna je razlika med sočutjem in empatijo?",
+                    answers: [
+                        "Sočutje vključuje razumevanje in ukrepanje, medtem ko je empatija le občutenje, kar drugi občutijo",
+                        "Ni razlike",
+                        "Empatija je močnejša od sočutja",
+                        "Sočutje je le za bližnje prijatelje"
+                    ],
+                    correctIndex: 0
+                },
+                {
+                    question: "Zakaj je samosočutje pomembno?",
+                    answers: [
+                        "Pomaga preborditi neuspehe, zmanjšuje stres in izboljšuje sposobnost skrbeti za druge",
+                        "Naredi vas sebične",
+                        "Ni pomembno",
+                        "Pomaga le pri osebnih težavah"
+                    ],
+                    correctIndex: 0
+                },
+                {
+                    question: "Zakaj je hvaležnost pomembna za sočutje?",
+                    answers: [
+                        "Hvaležnost pomaga prepoznati pozitivne vidike življenja in razvija sočutno razmišljanje",
+                        "Hvaležnost nima nič skupnega s sočutjem",
+                        "Hvaležnost je le za materialne stvari",
+                        "Hvaležnost vas naredi pomehkužene"
+                    ],
+                    correctIndex: 0
+                }
+            ]
+        };
+
+        const translations = {
+            en: {
+                title: "❤️ Compassion Quest",
+                subtitle: "Build empathy through meaningful choices",
+                compassionScore: "Compassion Score",
+                livesTouched: "Lives Touched",
+                scenario: "Scenario",
+                exercises: "Exercises",
+                quiz: "Quiz",
+                ok: "OK",
+                gameOverTitle: "🎉 Journey Complete!",
+                gameOverMessage: "You've completed your compassion quest! Every choice you made had an impact. Remember, compassion is not just about grand gestures—it's about the small, everyday acts of kindness that make the world a better place.",
+                playAgain: "Play Again",
+                points: "Compassion Points",
+                tutorialTitle: "Welcome to Compassion Quest",
+                tutorialWhatTitle: "What is Compassion?",
+                tutorialWhatText: "Compassion is the ability to recognize suffering in others and the genuine desire to help alleviate it. It goes beyond simply feeling sorry for someone—compassion involves understanding, empathy, and taking action to make a positive difference in someone's life.",
+                tutorialWhyTitle: "Why is Compassion Important?",
+                tutorialWhyText: "Compassion is fundamental to building a healthy, supportive society. Here's why it matters:",
+                tutorialWhyList: [
+                    "Creates stronger communities where people support and care for each other",
+                    "Reduces conflict and promotes understanding between different groups",
+                    "Improves mental health and well-being for both givers and receivers",
+                    "Builds trust and cooperation in workplaces, schools, and neighborhoods",
+                    "Fosters resilience and helps people overcome challenges together",
+                    "Makes the world a kinder, more inclusive place for everyone"
+                ],
+                tutorialHowTitle: "How to Play",
+                tutorialHowText: "You'll go through 8 different scenarios where someone needs help or understanding. Read each situation carefully and choose the response that shows the most compassion—your choices affect your Compassion Score and the number of Lives Touched. After the scenarios, you'll complete 4 self-compassion exercises, and then finish with a short final quiz to reflect on what you learned. Follow the progress bar and stats at the top as you move through each part of the journey.",
+                startGame: "Start Your Journey",
+                selfCompassionTitle: "Self-Compassion: Caring for Yourself",
+                selfCompassionWhat: "Self-compassion is the practice of treating yourself with the same kindness, understanding, and care that you would offer to a good friend. It involves recognizing your own suffering, understanding that imperfection is part of the human experience, and responding to yourself with warmth and support rather than harsh self-criticism.",
+                selfCompassionWhy: "Self-compassion is important because:",
+                selfCompassionWhyList: [
+                    "It helps you recover from setbacks and failures more quickly",
+                    "Reduces anxiety, depression, and stress",
+                    "Increases motivation and resilience",
+                    "Improves your ability to care for others",
+                    "Creates a foundation of inner strength and emotional stability",
+                    "Allows you to learn from mistakes without self-judgment"
+                ],
+                breathingExerciseTitle: "Breathing Exercise for Self-Compassion",
+                breathingExerciseDescription: "Take a moment to practice self-compassion through a simple breathing exercise. You will do 4 rounds of breathing: inhale for 4 seconds, hold for 7 seconds, and exhale for 8 seconds. Follow the countdown and breathe naturally. This exercise helps calm your mind and connect with your inner compassion.",
+                breathingStartBtn: "Start Breathing Exercise",
+                breathingSkipBtn: "Skip",
+                breathingSkipTitle: "That's Okay",
+                breathingSkipMessage: "It's completely okay if breathing exercises don't feel comfortable for you. Everyone has different ways of practicing self-compassion, and what matters most is that you listen to yourself.",
+                breathingSkipAlternative: "Alternative ways to practice self-compassion:",
+                breathingSkipAlternatives: [
+                    "Take a short walk or gentle movement",
+                    "Listen to calming music",
+                    "Simply sit quietly and rest",
+                    "Write down a few things you're grateful for"
+                ],
+                breathingSkipContinue: "Continue",
+                breathingInhale: "Inhale",
+                breathingHold: "Hold",
+                breathingExhale: "Exhale",
+                breathingRepeat: "Round",
+                breathingComplete: "Well done! You've completed the breathing exercise. Take a moment to appreciate this act of self-care.",
+                breathingContinueBtn: "Continue",
+                scenariosCompleteTitle: "🎉 Scenarios Complete!",
+                scenariosCompleteMessage: (score, lives) => {
+                    if (score < 0 || lives <= 1) {
+                        return "Congratulations! You've completed all scenarios.";
+                    }
+                    return "Congratulations! You've completed all scenarios. Your compassion has touched many lives.";
+                },
+                transitionToSelfCompassion: "Now, let's turn that compassion inward. It's time to practice self-compassion.",
+                selfCompassionPartTitle: "Self-Compassion Practice",
+                letterExerciseTitle: "Write a Letter to Yourself",
+                letterExerciseDescription: "Take a moment and write a compassionate letter to yourself. Think about a challenge you're facing or something you've been hard on yourself about. Write to yourself as you would write to a dear person—with kindness, understanding, and support.",
+                letterPlaceholder: "Write your letter here...",
+                letterContinueBtn: "Continue",
+                gratitudeExerciseTitle: "Three Things You're Grateful For",
+                gratitudeExerciseDescription: "Take a moment to reflect and write down three things you're grateful for. These can be big or small—anything that brings you joy, comfort, or appreciation. Practicing gratitude is a powerful way to cultivate self-compassion and recognize the positive aspects of your life.",
+                gratitudePlaceholder: "Write three things you're grateful for...",
+                gratitudeContinueBtn: "Continue",
+                mantraExerciseTitle: "Create Your Self-Compassion Mantra",
+                mantraExerciseDescription: "Create a personal mantra or phrase that you can use to remind yourself to be kind and compassionate toward yourself. This should be something meaningful to you—a short phrase that brings you comfort and reminds you of your worth.",
+                mantraPlaceholder: "Write your mantra here...",
+                mantraContinueBtn: "Continue",
+                continueToQuizBtn: "Continue to Quiz",
+                compassionQuizTitle: "What Have You Learned About Compassion?",
+                compassionQuizDescription: "Match each question with the correct answer by dragging the boxes on the right onto the boxes on the left side.",
+                quizDragInstruction: "Each question has one answer",
+                quizSubmitBtn: "Submit Answers",
+                quizResultsTitle: "Quiz Results",
+                quizResultsMessage: (correct, total) => `You got ${correct} out of ${total} correct!`,
+                quizContinueBtn: "Continue to Final Results",
+                exerciseComplete: "Congratulations, you've done something compassionate for yourself.",
+                exerciseCompleteMental: "That's okay—this exercise can be mental too. Take a moment to reflect, then continue.",
+                finalScore: {
+                    exceptional: (score, lives) => `🌟 Exceptional! Your compassion score is ${score}. You've touched ${lives} lives. You truly understand what it means to be compassionate and care for humanity.`,
+                    wonderful: (score, lives) => `✨ Wonderful! Your compassion score is ${score}. You've touched ${lives} lives. Your kindness makes a real difference.`,
+                    good: (score, lives) => `👍 Good effort! Your compassion score is ${score}. You've touched ${lives} lives. Keep practicing empathy and kindness.`,
+                    default: (score, lives) => `💭 Your compassion score is ${score}. You've touched ${lives} lives. Remember, every act of kindness matters—even the small ones.`
+                }
+            },
+            sl: {
+                title: "❤️ Po poti sočutja",
+                subtitle: "Gradite empatijo skozi pomembne odločitve",
+                compassionScore: "Točka sočutja",
+                livesTouched: "Dotaknjena življenja",
+                scenario: "Scenarij",
+                exercises: "Vadbe",
+                quiz: "Test",
+                ok: "V redu",
+                gameOverTitle: "🎉 Potovanje končano!",
+                gameOverMessage: "Zaključili ste svojo pot sočutja! Vsaka vaša odločitev je imela vpliv. Ne pozabite, sočutje ni le o velikih gestah - gre za majhna, vsakodnevna dejanja prijaznosti, ki naredijo svet boljši.",
+                playAgain: "Igraj ponovno",
+                points: "Točke sočutja",
+                tutorialTitle: "Dobrodošli v igri Po poti sočutja",
+                tutorialWhatTitle: "Kaj je sočutje?",
+                tutorialWhatText: "Sočutje je sposobnost prepoznati trpljenje pri drugih in iskrena želja pomagati pri lajšanju le-tega. Gre dlje od preprostega obžalovanja – sočutje vključuje razumevanje, empatijo in ukrepanje za pozitivno spremembo v življenju drugega.",
+                tutorialWhyTitle: "Zakaj je sočutje pomembno?",
+                tutorialWhyText: "Sočutje je temeljno za gradnjo zdrave, podporne družbe. Pomembno je zaradi naslednjih razlogov:",
+                tutorialWhyList: [
+                    "Ustvarja močnejšo skupnost, kjer se ljudje medsebojno podpirajo in skrbijo drug za drugega",
+                    "Zmanjšuje konflikte in spodbuja razumevanje med različnimi ljudmi",
+                    "Izboljšuje duševno zdravje in dobro počutje tako za dajalce kot prejemnike sočutja",
+                    "Gradi zaupanje in sodelovanje na delovnih mestih, v šolah in soseskah",
+                    "Spodbuja odpornost in pomaga ljudem skupaj premagovati izzive",
+                    "Naredi svet prijaznejši, bolj vključujoč prostor za vse"
+                ],
+                tutorialHowTitle: "Kako igrati",
+                tutorialHowText: "Srečali boste 8 različnih scenarijev, kjer nekdo potrebuje pomoč ali razumevanje. Preberite vsako situacijo skrbno in izberite odziv, ki izraža največ sočutja - vaše izbire vplivajo na točke sočutja in število dotaknjenih življenj. Po scenarijih boste opravili 4 vaje samosočutja, na koncu pa še kratek test, kjer preverite, kaj ste se naučili. Spremljajte vrstico napredka in statistiko na vrhu, da vidite, v katerem delu poti ste.",
+                startGame: "Začnite svojo pot",
+                selfCompassionTitle: "Samosočutje: skrb zase",
+                selfCompassionWhat: "Samosočutje je praksa, kjer se do sebe obnašate z enako prijaznostjo, razumevanjem in skrbjo, kot bi se do dobrega prijatelja. Vključuje prepoznavanje lastnega trpljenja in razumevanje, da je nepopolnost del človeške izkušnje. Samosočutje je odzivanje nase s toplino in podporo, v nasprotju s strogo samokritičnostjo.",
+                selfCompassionWhy: "Samosočutje je pomembno, ker:",
+                selfCompassionWhyList: [
+                    "Pomaga, da si hitreje opomoremo od neuspehov in padcev",
+                    "Zmanjšuje tesnobo, depresijo in stres",
+                    "Povečuje motivacijo in odpornost",
+                    "Izboljšuje sposobnost skrbeti za druge",
+                    "Ustvarja temelj notranje moči in čustvene stabilnosti",
+                    "Omogoča učenje iz napak brez nepotrebnih sodb"
+                ],
+                breathingExerciseTitle: "Dihalna vaja za samosočutje",
+                breathingExerciseDescription: "Vzemite si trenutek za vadbo samosočutja preko preproste dihalne vaje. Izvedli boste 4 cikle dihanja: vdih za 4 sekunde, zadržanje diha za 7 sekund in izdih za 8 sekund. Sledite odštevanju in dihajte naravno. Ta vaja pomaga umiriti um in se povezati z vašim notranjim sočutjem.",
+                breathingStartBtn: "Začni dihalno vajo",
+                breathingSkipBtn: "Preskoči",
+                breathingSkipTitle: "V redu je",
+                breathingSkipMessage: "Popolnoma je v redu, če se pri dihalnih vajah ne počutite udobno. Vsakdo ima različne načine vadbe samosočutja, in najpomembneje je, da se poslušate.",
+                breathingSkipAlternative: "Alternativni načini vadbe samosočutja:",
+                breathingSkipAlternatives: [
+                    "Naredite kratek sprehod ali nežno gibanje",
+                    "Poslušajte pomirjajočo glasbo",
+                    "Preprosto sedite tiho in počivajte",
+                    "Zapišite si nekaj stvari, za katere ste hvaležni"
+                ],
+                breathingSkipContinue: "Nadaljuj",
+                breathingInhale: "Vdih",
+                breathingHold: "Zadržanje diha",
+                breathingExhale: "Izdih",
+                breathingRepeat: "Krog",
+                breathingComplete: "Odlično! Dokončali ste dihalno vajo. Vzemite si trenutek, da cenite ta dejanje samooskrbe.",
+                breathingContinueBtn: "Nadaljuj",
+                scenariosCompleteTitle: "🎉 Scenariji zaključeni!",
+                scenariosCompleteMessage: (score, lives) => {
+                    if (score < 0 || lives <= 1) {
+                        return "Čestitke! Dokončali ste vse scenarije.";
+                    }
+                    return "Čestitke! Dokončali ste vse scenarije. Vaše sočutje se je dotaknilo številnih življenj.";
+                },
+                transitionToSelfCompassion: "Zdaj pa obrnimo to sočutje navznoter. Čas je za vadbo samosočutja.",
+                selfCompassionPartTitle: "Vadba samosočutja",
+                letterExerciseTitle: "Napišite pismo samemu sebi",
+                letterExerciseDescription: "Vzemite si trenutek in napišite sočutno pismo samemu sebi. Pomislite na izziv, s katerim se soočate, ali na nekaj, zaradi česar ste bili strogi do sebe. Pišite sebi, kot bi pisali dragi osebi - s prijaznostjo, razumevanjem in podporo.",
+                letterPlaceholder: "Napišite svoje pismo tukaj...",
+                letterContinueBtn: "Nadaljuj",
+                gratitudeExerciseTitle: "Tri stvari, za katere ste hvaležni",
+                gratitudeExerciseDescription: "Vzemite si trenutek za razmislek in zapišite tri stvari, za katere ste hvaležni. Lahko so velike ali majhne - vse, kar vam prinaša veselje, tolažbo ali hvaležnost. Vadba hvaležnosti je močan način za razvijanje samosočutja in prepoznavanje pozitivnih vidikov vašega življenja.",
+                gratitudePlaceholder: "Napišite tri stvari, za katere ste hvaležni...",
+                gratitudeContinueBtn: "Nadaljuj",
+                mantraExerciseTitle: "Ustvarite svojo samo-sočutno mantro",
+                mantraExerciseDescription: "Ustvarite osebno mantro ali frazo, ki jo lahko uporabite, da se spomnite na prijaznost in sočutnost do sebe. To bi moralo biti nekaj pomenljivega za vas - kratka fraza, ki vam prinaša tolažbo in vas spominja na vašo vrednost.",
+                mantraPlaceholder: "Napišite svojo mantro tukaj...",
+                mantraContinueBtn: "Nadaljuj",
+                continueToQuizBtn: "Nadaljuj na test",
+                compassionQuizTitle: "Kaj ste se naučili o sočutju?",
+                compassionQuizDescription: "Povežite vsako vprašanje s pravilnim odgovorom tako, da povlečete škatle z desne na škatle, ki se nahajajo na levi strani.",
+                quizDragInstruction: "Vsako vprašanje ima en odgovor",
+                quizSubmitBtn: "Oddaj odgovore",
+                quizResultsTitle: "Rezultati testa",
+                quizResultsMessage: (correct, total) => `Pravilno ste odgovorili na ${correct} od ${total} vprašanj!`,
+                quizContinueBtn: "Nadaljuj na končne rezultate",
+                exerciseComplete: "Čestitke, naredili ste nekaj sočutnega do sebe.",
+                exerciseCompleteMental: "V redu je — ta vaja je lahko tudi mentalna. Vzemite si trenutek za razmislek, nato nadaljujte.",
+                finalScore: {
+                    exceptional: (score, lives) => `🌟 Izjemno! Vaša točka sočutja je ${score}. Dotaknili ste se ${lives} življenj. Resnično razumete, kaj pomeni biti sočuten in skrbeti za človeštvo.`,
+                    wonderful: (score, lives) => `✨ Čudovito! Vaša točka sočutja je ${score}. Dotaknili ste se ${lives} življenj. Vaša prijaznost naredi resnično razliko.`,
+                    good: (score, lives) => `👍 Dobro delo! Vaša točka sočutja je ${score}. Dotaknili ste se ${lives} življenj. Nadaljujte z vadbo empatije in prijaznosti.`,
+                    default: (score, lives) => `💭 Vaša točka sočutja je ${score}. Dotaknili ste se ${lives} življenj. Ne pozabite, vsako dejanje prijaznosti šteje—tudi majhna.`
+                }
+            }
+        };
+
+        function getScenariosForLanguage(lang) {
+            const allScenariosData = {
+                en: [
+                    {
+                        character: "👴",
+                        name: "Elderly Neighbor",
+                        situation: "You see your elderly neighbor struggling to carry groceries up the stairs. You're already late for a meeting.",
+                        choices: [
+                            {
+                                text: "Stop and help carry the groceries, even if it makes you late",
+                                compassion: 15,
+                                feedback: "Your neighbor is grateful and you feel good about helping. Sometimes being late is worth it when someone needs you.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Quickly help and explain you're in a hurry",
+                                compassion: 8,
+                                feedback: "You helped, but rushing made your neighbor feel like a burden. A few extra minutes would have meant a lot.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Pretend you didn't see and continue on your way",
+                                compassion: -5,
+                                feedback: "You made it on time, but you can't shake the feeling that you missed an opportunity to show kindness.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+            {
+                character: "😔",
+                name: "Classmate",
+                situation: "A classmate who usually sits alone looks upset. You notice they've been quiet all week.",
+                choices: [
+                    {
+                        text: "Sit with them and ask if they're okay, genuinely listening",
+                        compassion: 20,
+                        feedback: "They open up about feeling isolated. Your kindness makes them feel seen and valued. You've made a real connection.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Send a quick text message asking if they're okay",
+                        compassion: 5,
+                        feedback: "It's a nice gesture, but sometimes people need face-to-face connection. They appreciate it but seem to need more.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Assume they want to be alone and don't bother them",
+                        compassion: -3,
+                        feedback: "Sometimes people who seem to want space actually need someone to reach out. You missed a chance to help.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "🐕",
+                name: "Lost Dog",
+                situation: "You find a lost dog wandering the street. It looks scared and has a collar but no visible owner nearby.",
+                choices: [
+                    {
+                        text: "Stay with the dog, check the tag, and help find the owner",
+                        compassion: 18,
+                        feedback: "You reunite the dog with its worried owner. The relief and gratitude in their eyes is priceless. You made a real difference today.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Call animal control and leave",
+                        compassion: 8,
+                        feedback: "You did the responsible thing, but the dog seems scared. The owner might have been nearby and found them faster with your help.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Ignore it and assume someone else will help",
+                        compassion: -5,
+                        feedback: "You walk away, but you can't help wondering what happened to that scared dog. Sometimes compassion means taking action.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "👨‍💼",
+                name: "Struggling Colleague",
+                situation: "A colleague at work seems overwhelmed with their workload. You have your own tasks to complete.",
+                choices: [
+                    {
+                        text: "Offer to help with some of their tasks, even if it means working a bit longer",
+                        compassion: 16,
+                        feedback: "Your colleague is incredibly grateful. Your teamwork strengthens your relationship and creates a more supportive work environment.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Give them advice on time management",
+                        compassion: 6,
+                        feedback: "Your advice is well-intentioned, but sometimes people need practical help, not just suggestions. They appreciate the thought though.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Focus on your own work and let them handle it",
+                        compassion: -2,
+                        feedback: "You completed your tasks, but you notice the stress is affecting the whole team. Sometimes helping others helps everyone.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "👶",
+                name: "Young Parent",
+                situation: "You're in a store and see a young parent with a crying baby, looking stressed while trying to shop. Other customers are giving them dirty looks.",
+                choices: [
+                    {
+                        text: "Offer to help hold the baby or carry their basket, showing understanding",
+                        compassion: 20,
+                        feedback: "The parent is moved to tears by your kindness. Your compassion in that moment of stress meant everything to them.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Give them an understanding smile and move on",
+                        compassion: 7,
+                        feedback: "Your kindness is noticed and appreciated, though practical help might have been more meaningful.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Avoid them and shop elsewhere to escape the noise",
+                        compassion: -4,
+                        feedback: "You avoided the situation, but that parent felt the judgment from others. A small act of kindness could have changed their day.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "🎓",
+                name: "New Student",
+                situation: "A new student just transferred to your school. They look lost and nervous, standing alone during lunch.",
+                choices: [
+                    {
+                        text: "Invite them to sit with you and your friends, making them feel welcome",
+                        compassion: 22,
+                        feedback: "You've made their transition so much easier. They'll always remember your kindness. You've gained a new friend!",
+                        type: "positive"
+                    },
+                    {
+                        text: "Wave hello but don't invite them over",
+                        compassion: 4,
+                        feedback: "A friendly gesture, but they're still alone. Sometimes people need a clear invitation to feel welcome.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Let someone else help them, you're busy with your friends",
+                        compassion: -3,
+                        feedback: "You stayed in your comfort zone, but that new student spent lunch alone. A small gesture could have made a huge difference.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "🌧️",
+                name: "Homeless Person",
+                situation: "You pass by someone who appears to be homeless, sitting in the rain. They're not asking for anything, just trying to stay dry.",
+                choices: [
+                    {
+                        text: "Offer to buy them a warm meal and find them shelter information",
+                        compassion: 25,
+                        feedback: "Your genuine care and practical help restores their hope. You treated them with dignity and respect. This is true compassion.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Give them some spare change",
+                        compassion: 10,
+                        feedback: "Your generosity helps, but they might need more than money. Still, every act of kindness matters.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Walk by quickly, unsure what to do",
+                        compassion: -2,
+                        feedback: "You felt uncomfortable, which is understandable. But sometimes the most compassionate thing is to acknowledge someone's humanity.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "💔",
+                name: "Friend Going Through Hard Times",
+                situation: "A close friend has been going through a difficult breakup and hasn't been themselves lately. They've been canceling plans.",
+                choices: [
+                    {
+                        text: "Show up at their place with their favorite food and just be there to listen",
+                        compassion: 24,
+                        feedback: "Your friend breaks down in tears of gratitude. Sometimes people need someone to show up without being asked. You've been a true friend.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Text them regularly to check in",
+                        compassion: 12,
+                        feedback: "Your consistent care means a lot, though sometimes people in pain need physical presence and connection.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Give them space and wait for them to reach out",
+                        compassion: 2,
+                        feedback: "Respecting boundaries is important, but sometimes people who are hurting need someone to reach out first.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "🚌",
+                name: "Bus Passenger",
+                situation: "You're on a crowded bus and notice an elderly person standing while younger people are sitting. No one seems to notice or care.",
+                choices: [
+                    {
+                        text: "Immediately offer your seat and help them get comfortable",
+                        compassion: 16,
+                        feedback: "The elderly person is deeply grateful. Your simple act of respect and kindness brightens their day and sets a positive example for others.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Offer your seat but seem a bit reluctant",
+                        compassion: 8,
+                        feedback: "You did the right thing, but your hesitation was noticeable. Genuine kindness comes from the heart, not obligation.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Wait for someone else to offer their seat",
+                        compassion: -3,
+                        feedback: "You waited, but no one else stepped up. Sometimes being the first to act is what makes the difference.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "🌍",
+                name: "International Student",
+                situation: "A student from another country seems to be struggling with the language and looks confused during a group project. Others are getting frustrated with them.",
+                choices: [
+                    {
+                        text: "Patiently help them understand, using simple language and visual aids",
+                        compassion: 19,
+                        feedback: "Your patience and understanding help them succeed. They're grateful for your kindness and you've made a new friend from another culture.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Translate for them but seem rushed",
+                        compassion: 9,
+                        feedback: "You helped, but your impatience made them feel like a burden. A little more patience would have meant a lot.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Let others handle it and focus on your part",
+                        compassion: -2,
+                        feedback: "You completed your work, but the student felt excluded. Inclusion takes effort, but it's worth it.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "🎂",
+                name: "Birthday Forgotten",
+                situation: "You realize you completely forgot a close friend's birthday yesterday. They haven't mentioned it, but you know they were probably hurt.",
+                choices: [
+                    {
+                        text: "Call them immediately, apologize sincerely, and plan a special belated celebration",
+                        compassion: 18,
+                        feedback: "Your friend appreciates your honesty and effort to make it right. Your genuine care and action mean more than a perfect memory.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Send a quick apology text and promise to make it up",
+                        compassion: 7,
+                        feedback: "You acknowledged the mistake, but a phone call or in-person conversation would have shown more care.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Hope they don't bring it up and move on",
+                        compassion: -4,
+                        feedback: "Avoiding the issue doesn't make it go away. Your friend likely noticed and felt unimportant.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "📚",
+                name: "Struggling Student",
+                situation: "A younger student in the library looks overwhelmed with their homework. They keep sighing and seem on the verge of tears.",
+                choices: [
+                    {
+                        text: "Approach them gently and offer to help explain the concepts they're struggling with",
+                        compassion: 17,
+                        feedback: "Your help and encouragement give them confidence. You've not only helped with homework but also shown them that asking for help is okay.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Offer to share your notes but don't have time to explain",
+                        compassion: 6,
+                        feedback: "Sharing notes helps, but understanding comes from explanation. They appreciate the gesture though.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Ignore them and focus on your own work",
+                        compassion: -3,
+                        feedback: "You stayed focused, but you could have made a real difference in someone's day with just a few minutes of your time.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "🛒",
+                name: "Shopper in Need",
+                situation: "You're at the checkout and the person in front of you realizes they're short on money. They're embarrassed and trying to decide what to put back.",
+                choices: [
+                    {
+                        text: "Offer to pay the difference, making them feel comfortable about accepting help",
+                        compassion: 21,
+                        feedback: "Their relief and gratitude are overwhelming. Your kindness in that moment of embarrassment meant everything. You've shown true compassion.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Offer to pay but make it obvious you're doing them a favor",
+                        compassion: 10,
+                        feedback: "You helped, but your attitude made them feel worse about needing help. Kindness should preserve dignity.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Look away and pretend you don't notice",
+                        compassion: -4,
+                        feedback: "You avoided an awkward situation, but someone needed help and you had the chance to make a real difference.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "🎭",
+                name: "Performer Having a Bad Day",
+                situation: "You're at a local talent show and a performer clearly makes a mistake. The audience is quiet, and the performer looks devastated on stage.",
+                choices: [
+                    {
+                        text: "Start clapping enthusiastically and encourage others to show support",
+                        compassion: 20,
+                        feedback: "Your support turns the moment around. The performer finishes with confidence, and you've shown that compassion can transform failure into resilience.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Clap politely but don't do anything special",
+                        compassion: 5,
+                        feedback: "You were respectful, but sometimes people need more than polite applause—they need genuine encouragement.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Stay quiet and wait for it to be over",
+                        compassion: -3,
+                        feedback: "Your silence added to their embarrassment. A little encouragement could have changed everything for them.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "🏥",
+                name: "Hospital Visitor",
+                situation: "You're visiting someone in the hospital and notice another patient in the room has no visitors. They look lonely and sad.",
+                choices: [
+                    {
+                        text: "Strike up a friendly conversation and include them in your visit",
+                        compassion: 23,
+                        feedback: "Your kindness brings light to their day. Sometimes the smallest gestures of inclusion can mean the world to someone feeling alone.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Smile and nod but focus on your own visit",
+                        compassion: 6,
+                        feedback: "You were friendly, but a few minutes of conversation could have made a huge difference to someone feeling isolated.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Ignore them and focus only on your visit",
+                        compassion: -2,
+                        feedback: "You completed your visit, but you missed an opportunity to brighten someone's difficult day with simple human connection.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "🌙",
+                name: "Night Shift Worker",
+                situation: "You're at a late-night coffee shop and notice a tired-looking night shift worker who seems stressed. They're trying to study while working.",
+                choices: [
+                    {
+                        text: "Buy them a coffee and offer encouragement, maybe help with a question if you can",
+                        compassion: 19,
+                        feedback: "Your gesture of support means the world to them. You've shown that someone sees their hard work and cares. Small acts of recognition matter.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Give them an understanding smile",
+                        compassion: 4,
+                        feedback: "Your empathy is noticed, but sometimes people need more than acknowledgment—they need practical support.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Mind your own business and focus on your work",
+                        compassion: -2,
+                        feedback: "You stayed focused, but you could have made someone's difficult night a little easier with a small gesture.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "🎁",
+                name: "Gift Exchange",
+                situation: "During a gift exchange, someone receives a gift that's clearly not to their taste. They're trying to be polite but look disappointed.",
+                choices: [
+                    {
+                        text: "Later, privately offer to trade or help them find something they'd actually enjoy, showing you noticed",
+                        compassion: 17,
+                        feedback: "Your thoughtfulness and discretion show real care. You've turned a disappointing moment into a positive experience while respecting everyone's feelings.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Make a joke to lighten the mood",
+                        compassion: 5,
+                        feedback: "You tried to help, but humor might not address their actual disappointment. Sometimes people need practical help, not jokes.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Ignore it and assume they'll be fine",
+                        compassion: -2,
+                        feedback: "You didn't want to make it awkward, but sometimes the most compassionate thing is to notice and help, even quietly.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "🚗",
+                name: "Car Trouble",
+                situation: "You see someone on the side of the road with car trouble. They're trying to change a tire but clearly struggling. You're running late.",
+                choices: [
+                    {
+                        text: "Stop and help, even if it makes you late, ensuring they're safe",
+                        compassion: 22,
+                        feedback: "Your help gets them back on the road safely. Their gratitude is immense, and you know you did the right thing. Safety and kindness matter more than schedules.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Stop briefly to check if they need help, then call roadside assistance",
+                        compassion: 12,
+                        feedback: "You ensured they got help, which is good. But sometimes people need more than a phone call—they need someone to stay until help arrives.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Drive by, assuming someone else will help",
+                        compassion: -5,
+                        feedback: "You made it on time, but you can't shake the worry about that person on the side of the road. Sometimes compassion means stopping.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "📱",
+                name: "Social Media Bullying",
+                situation: "You notice someone in your online community is being bullied in comments. They're clearly hurt but trying to defend themselves alone.",
+                choices: [
+                    {
+                        text: "Stand up for them publicly, report the bullies, and send them a private message of support",
+                        compassion: 24,
+                        feedback: "Your courage to stand up makes a real difference. The person feels supported and less alone. You've shown that compassion means taking action against injustice.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Send them a private message of support but don't get involved publicly",
+                        compassion: 10,
+                        feedback: "Your private support helps, but sometimes people need public allies. Standing up together is more powerful than supporting in silence.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Stay out of it to avoid drama",
+                        compassion: -4,
+                        feedback: "You avoided conflict, but silence in the face of bullying can feel like approval. Sometimes compassion means getting involved.",
+                        type: "negative"
+                    }
+                ]
+            },
+            {
+                character: "🎨",
+                name: "Artistic Friend",
+                situation: "A friend shares their creative work with you, but it's clearly not very good. They're excited and asking for your honest opinion.",
+                choices: [
+                    {
+                        text: "Find genuine things to praise, offer constructive feedback gently, and encourage their passion",
+                        compassion: 18,
+                        feedback: "Your balanced approach preserves their confidence while helping them grow. You've shown that compassion means being honest but kind, supporting their journey.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Give vague praise to avoid hurting their feelings",
+                        compassion: 6,
+                        feedback: "You protected their feelings, but they can sense you're not being genuine. Honest, gentle feedback would have been more helpful.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Be brutally honest about how bad it is",
+                        compassion: -6,
+                        feedback: "Your honesty crushed their spirit. There's a difference between honesty and cruelty. Compassion means finding a way to be truthful without destroying someone's passion.",
+                        type: "negative"
+                    }
+                ]
+            }
+                ],
+                sl: [
+                    {
+                        character: "👴",
+                        name: "Starejši sosed",
+                        situation: "Vidite svojega starejšega soseda, ki mučno prenaša nakupovalne vrečke po stopnicah. Že zamujate na sestanek.",
+                        choices: [
+                            {
+                                text: "Ustavite se in pomagate prenesti nakupovalne vrečke, tudi če zaradi tega zamujate",
+                                compassion: 15,
+                                feedback: "Vaš sosed je hvaležen in vi se počutite dobro, ker ste pomagali. Včasih je zamuda vredna, ko vas nekdo potrebuje.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Hitro pomagate in razložite, da ste v naglici",
+                                compassion: 8,
+                                feedback: "Pomagali ste, vendar je vaša naglica na sosedu pustila učinek, da se je počutil kot breme. Nekaj dodatnih minut bi veliko pomenilo.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Delajte se, kot da niste videli, in nadaljujte svojo pot",
+                                compassion: -5,
+                                feedback: "Prišli ste pravočasno, vendar se ne morete znebiti občutka, da ste zamudili priložnost pokazati prijaznost.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "😔",
+                        name: "Sošolec",
+                        situation: "Sošolec, ki običajno sedi sam, izgleda žalosten. Opazite, da je ves teden tiho.",
+                        choices: [
+                            {
+                                text: "Usedite se k njemu in vprašate, ali je vse v redu, in ga resnično poslušate",
+                                compassion: 20,
+                                feedback: "Odpre se o občutku osamljenosti. Vaša prijaznost vpliva nanj tako, da se počuti videnega in cenjenega. Vzpostavili ste resnično povezavo.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Pošljite hitro sporočilo in vprašate, ali je vse v redu",
+                                compassion: 5,
+                                feedback: "Lepo je, vendar včasih ljudje potrebujejo osebno povezavo. Sošolec ceni vase dejanje, vendar se zdi, da bi vas bolj potreboval.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Predpostavite, da želi biti sam, zato ga ne motite",
+                                compassion: -3,
+                                feedback: "Četudi se včasih zdi, da ljudje želijo prostor, dejansko potrebujejo, da se nekdo oglasi. Zamudili ste priložnost pomagati.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "🐕",
+                        name: "Izgubljen pes",
+                        situation: "Najdete izgubljenega psa, ki tava po ulici. Izgleda prestrašen in ima ovratnico, vendar ni vidnega lastnika v bližini.",
+                        choices: [
+                            {
+                                text: "Ostanite s psom, preverite etiketo in pomagate najti lastnika",
+                                compassion: 18,
+                                feedback: "Povežete psa z njegovim zaskrbljenim lastnikom. Olajšanje in hvaležnost v njegovih očeh je neprecenljivo. Danes ste naredili resnično razliko.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Pokličite službo za živali in odidite",
+                                compassion: 8,
+                                feedback: "Naredili ste odgovorno stvar, vendar se pes zdi prestrašen. Lastnik bi bil morda v bližini in bi ga hitreje našel z vašo pomočjo.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Ignorirajte ga in predpostavite, da bo nekdo drug pomagal",
+                                compassion: -5,
+                                feedback: "Odšli ste, vendar se ne morete znebiti razmišljanja, kaj se je zgodilo s tem prestrašenim psom. Sočutje pomeni ukrepanje.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "👨‍💼",
+                        name: "Sodelavec v težavah",
+                        situation: "Sodelavec na delu izgleda preobremenjen s svojimi delovnimi obvzenostmi. Tudi vi imate svoje naloge za dokončati.",
+                        choices: [
+                            {
+                                text: "Ponudite pomoč pri nekaterih njegovih nalogah, tudi če to pomeni, da boste delali malo dlje",
+                                compassion: 16,
+                                feedback: "Sodelavec je neverjetno hvaležen. Timsko delo dodatno okrepi vaš odnos in ustvari bolj podporno delovno okolje.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Dajte mu nasvet o upravljanju časa",
+                                compassion: 6,
+                                feedback: " Sodelavec ceni vaš nasvet, vendar pa ljudje včasih potrebujejo praktično pomoč, ne le predloge.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Osredotočite se na svoje delo in pustite, da se s tem ukvarja sam",
+                                compassion: -2,
+                                feedback: "Dokončali ste svoje naloge, vendar opazite, da stres vpliva na celotno ekipo. Včasih pomoč drugemu pomaga vsem.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "👶",
+                        name: "Mladi starš",
+                        situation: "Ste v trgovini in vidite mladega starša z jokajočim dojenčkom, ki izgleda pod stresom med nakupovanjem. Drugi kupci ju gledajo zaničljivo.",
+                        choices: [
+                            {
+                                text: "Ponudite pomoč pri držanju otroka ali prenašanju košarice, pri čemer pokažete razumevanje",
+                                compassion: 20,
+                                feedback: "Starš je ganjen do solz zaradi vaše prijaznosti. Vaše sočutje v tem trenutku stresa je pomenilo vse zanje.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Dajte jim razumevajoč nasmeh in nadaljujte",
+                                compassion: 7,
+                                feedback: "Vaša prijaznost je opažena in cenjena, čeprav bi praktična pomoč morda bila bolj pomembna.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Izognite se ju in nakupujte drugje, da pobegnete od hrupa",
+                                compassion: -4,
+                                feedback: "Izognili ste se situaciji, vendar je ta starš čutil obsodbo drugih. Majhno dejanje prijaznosti bi lahko spremenilo njegov dan.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "🎓",
+                        name: "Nov učenec",
+                        situation: "Nov učenec se je pravkar preselil na vašo šolo. Izgleda izgubljen in nervozen, stoji sam med kosilom.",
+                        choices: [
+                            {
+                                text: "Povabite ga, naj sedi z vami in vašimi prijatelji, da se počuti dobrodošlega",
+                                compassion: 22,
+                                feedback: "Naredili ste njegov prehod veliko lažji. Vedno se bo spomnil vaše prijaznosti. Pridobili ste novega prijatelja!",
+                                type: "positive"
+                            },
+                            {
+                                text: "Pozdravite, vendar ga ne povabite",
+                                compassion: 4,
+                                feedback: "Prijazna gesta, vendar je še vedno sam. Včasih ljudje potrebujejo jasno povabilo, da se počutijo dobrodošli.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Pustite, da mu nekdo drug pomaga, vi ste zasedeni s prijatelji",
+                                compassion: -3,
+                                feedback: "Ostali ste v svoji coni udobja, vendar je ta nov učenec preživel kosilo sam. Majhna gesta bi lahko naredila ogromno razliko.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "🌧️",
+                        name: "Brezdomec",
+                        situation: "Obidete nekoga, ki izgleda kot brezdomec, ki sedi na dežju. Ne prosi za nič, le poskuša ostati suh.",
+                        choices: [
+                            {
+                                text: "Ponudite, da mu kupite topel obrok in poiščete informacije o zavetišču",
+                                compassion: 25,
+                                feedback: "Vaša iskrena skrb in praktična pomoč obnovi njegovo upanje. Obravnavali ste ga z dostojanstvom in spoštovanjem. To je resnično sočutje.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Dajte mu nekaj drobiža",
+                                compassion: 10,
+                                feedback: "Vaša velikodušnost pomaga, vendar morda potrebujejo več kot denar. Kljub temu vsako dejanje prijaznosti šteje.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Hitro prečite mimo, negotovi, kaj storiti",
+                                compassion: -2,
+                                feedback: "Počutili ste se neudobno, kar je razumljivo. Vendar včasih je najbolj sočutna stvar priznati človekovo človečnost.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "💔",
+                        name: "Prijatelj v težavah",
+                        situation: "Bližnji prijatelj preživlja težko ločitev in zadnje čase si ni podoben. Preklaplja načrte.",
+                        choices: [
+                            {
+                                text: "Pojavite se pri njemu z njegovo najljubšo hrano in samo bodite tam, da poslušate",
+                                compassion: 24,
+                                feedback: "Vaš prijatelj se zlomi v solzah hvaležnosti. Včasih ljudje potrebujejo, da se nekdo pojavi, ne da bi bili vprašani. Bili ste resničen prijatelj.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Redno pošiljajte sporočila in preverjajte, kako je",
+                                compassion: 12,
+                                feedback: "Vaša dosledna skrb veliko pomeni, čeprav včasih ljudje v bolečini potrebujejo fizično prisotnost in povezavo.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Dajte mu prostor in počakajte, da se oglasi",
+                                compassion: 2,
+                                feedback: "Spoštovanje meja je pomembno, vendar včasih ljudje, ki trpijo, potrebujejo, da se nekdo prvi oglasi.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "🚌",
+                        name: "Potnik v avtobusu",
+                        situation: "Ste v polnem avtobusu in opazite starejšo osebo, ki stoji, medtem ko mlajši ljudje sedijo. Zdi se, da nihče ne opazi ali skrbi.",
+                        choices: [
+                            {
+                                text: "Takoj ponudite svoj sedež in pomagate, da se oseba udobno usede",
+                                compassion: 16,
+                                feedback: "Starejša oseba je globoko hvaležna. Vaša preprosta gesta spoštovanja in prijaznosti razsvetli njen dan in postavi pozitiven primer za druge.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Ponudite svoj sedež, vendar se zdi malo nevoljno",
+                                compassion: 8,
+                                feedback: "Naredili ste pravo stvar, vendar je bila vaše oklevanje vidno. Iskrena prijaznost prihaja iz srca, ne iz obveznosti.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Počakajte, da nekdo drug ponudi svoj sedež",
+                                compassion: -3,
+                                feedback: "Počakali ste, vendar nihče drug ni stopil naprej. Včasih je biti prvi, ki ukrepa, tisto, kar naredi razliko.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "🌍",
+                        name: "Mednarodni študent",
+                        situation: "Zdi se, da ima študent iz druge države izziv z jezikom in izgleda zmeden med skupinskim projektom. Drugi postajajo frustrirani zaradi njega.",
+                        choices: [
+                            {
+                                text: "Potrpežljivo mu pomagate razumeti, z uporabo preprostega jezika in vizualnih pripomočkov",
+                                compassion: 19,
+                                feedback: "Vaša potrpežljivost in razumevanje mu pomagata uspeti. Hvaležen je za vašo prijaznost in pridobili ste novega prijatelja iz druge kulture.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Na hitro mu prevedite",
+                                compassion: 9,
+                                feedback: "Pomagali ste, vendar je vaša nepotrpežljivost naredila, da se je počutil kot breme. Malo več potrpežljivosti bi veliko pomenilo.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Pustite drugim, da se s tem ukvarjajo, in se osredotočite na svoj del",
+                                compassion: -2,
+                                feedback: "Dokončali ste svoje delo, vendar se je študent počutil izključenega. Vključevanje zahteva napor, vendar je vredno.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "🎂",
+                        name: "Pozabljen rojstni dan",
+                        situation: "Ugotovite, da ste včeraj popolnoma pozabili rojstni dan bližnje prijateljice. Sicer vam tega sama ni omenila, vendar veste, da je bila zaradi tega verjetno prizadeta.",
+                        choices: [
+                            {
+                                text: "Pokličite jo takoj, se ji iskreno opravičite in načrtujte posebno zamujeno praznovanje",
+                                compassion: 18,
+                                feedback: "Vaš prijateljica ceni iskrenost in napor, da to popravite. Vaša iskrena skrb in dejanje pomenita več kot popoln spomin.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Pošljite ji hitro opravičilo in obljubite, da boste to popravili",
+                                compassion: 7,
+                                feedback: "Priznali ste napako, vendar bi telefonski klic ali osebni pogovor izkazal več skrbi.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Upajte, da tega ne omeni, in nadaljujte",
+                                compassion: -4,
+                                feedback: "Izogibanje problemu, težave ne izniči. Vaš prijateljica se dobro zaveda vaših ravnanj in se počuti manjvredno.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "📚",
+                        name: "Študentka v težavah",
+                        situation: "Mlajša študentka v knjižnici izgleda preobremenjena s svojo domačo nalogo. Vzdihuje in se zdi, da je na robu solz.",
+                        choices: [
+                            {
+                                text: "Pristopite k njej nežno in ponudite pomoč pri razlagi konceptov, s katerimi se muči",
+                                compassion: 17,
+                                feedback: "Vaša pomoč in spodbuda ji daje zaupanje. Ne samo, da ste pomagali pri domači nalogi, temveč tudi, da je prositi za pomoč v redu.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Ponudite deljenje zapiskov, vendar nimate časa za razlago",
+                                compassion: 6,
+                                feedback: "Deljenje zapiskov pomaga, vendar razumevanje prihaja iz razlage. Študentka vseeno ceni gesto.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Ignorirajte jo in se osredotočite na svoje delo",
+                                compassion: -3,
+                                feedback: "Ostali ste osredotočeni, vendar bi lahko z le nekaj minutami svojega časa naredili resnično razliko v dnevu nekoga.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "🛒",
+                        name: "Kupovalka v stiski",
+                        situation: "Ste na blagajni in oseba pred vami ugotovi, da ji primanjkuje denarja. Sramuje se in poskuša izbrati, kaj naj vrne.",
+                        choices: [
+                            {
+                                text: "Ponudite, da plačate razliko, da se počuti udobno pri sprejemanju pomoči",
+                                compassion: 21,
+                                feedback: "Njeno olajšanje in hvaležnost sta premočna. Vaša prijaznost v tem trenutku sramu je pomenila vse. Pokazali ste resnično sočutje.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Ponudite plačilo, vendar očitno pokažite, da jim delate uslugo",
+                                compassion: 10,
+                                feedback: "Pomagali ste, vendar je vaš odnos naredil, da se je počutila slabše zaradi potrebe po pomoči. Prijaznost bi morala ohraniti dostojanstvo.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Pogledate stran in se delate, da ne opazite",
+                                compassion: -4,
+                                feedback: "Izognili ste se neprijetni situaciji, vendar je nekdo potreboval pomoč in imeli ste priložnost narediti resnično razliko.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "🎭",
+                        name: "Izvajalec ima slab dan",
+                        situation: "Ste na lokalni talentni oddaji in izvajalec očitno naredi napako. Občinstvo je tiho in izvajalec na odru izgleda uničen.",
+                        choices: [
+                            {
+                                text: "Začnite navdušeno ploskati in spodbujajte druge, da pokažejo podporo",
+                                compassion: 20,
+                                feedback: "Vaša podpora obrne trenutek. Izvajalec konča z zaupanjem in pokazali ste, da lahko sočutje spremeni neuspeh v odpornost.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Veselo ploskajte, vendar ne naredite nič posebnega",
+                                compassion: 5,
+                                feedback: "Bili ste spoštljivi, vendar včasih ljudje potrebujejo več kot vljuden aplavz—potrebujejo iskreno spodbudo.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Ostanite tiho in počakajte, da se konča",
+                                compassion: -3,
+                                feedback: "Vaša tišina je dodala njegovi sramoti. Malo spodbude bi lahko spremenilo vse zanj.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "🏥",
+                        name: "Obiskovalec v bolnišnici",
+                        situation: "Obiskujete nekoga v bolnišnici in opazite, da drugi bolnik v sobi nima obiskovalcev. Izgleda osamljeno in žalostno.",
+                        choices: [
+                            {
+                                text: "Začnite prijateljski pogovor in ga vključite v svoj obisk",
+                                compassion: 23,
+                                feedback: "Vaša prijaznost prinese svetlobo v njegov dan. Včasih lahko najmanjše geste vključevanja pomenijo svet nekomu, ki se počuti osamljeno.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Nasmehnite se in kimajte, vendar se osredotočite na svoj obisk",
+                                compassion: 6,
+                                feedback: "Bili ste prijazni, vendar bi lahko nekaj minut pogovora naredilo ogromno razliko nekomu, ki se počuti izolirano.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Ignorirajte ga in se osredotočite le na svoj obisk",
+                                compassion: -2,
+                                feedback: "Dokončali ste svoj obisk, vendar ste zamudili priložnost razsvetliti nekomu težak dan s preprosto človeško povezavo.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "🌙",
+                        name: "Nočni delavec",
+                        situation: "Ste v pozno nočni kavarni in opazite utrujenega nočnega delavca, ki izgleda pod stresom. Poskuša študirati med delom.",
+                        choices: [
+                            {
+                                text: "Kupite mu kavo in ponudite spodbudo, morda pomagajte z vprašanjem, če lahko",
+                                compassion: 19,
+                                feedback: "Vaša gesta podpore pomeni svet zanj. Pokazali ste, da nekdo vidi njegovo trdo delo in skrbi. Majhna dejanja priznanja štejejo.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Dajte jim razumevajoč nasmeh",
+                                compassion: 4,
+                                feedback: "Vaša empatija je opažena, vendar včasih ljudje potrebujejo več kot priznanje—potrebujejo praktično podporo.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Posvetite se svoji stvari in se osredotočite na svoje delo",
+                                compassion: -2,
+                                feedback: "Ostali ste osredotočeni, vendar bi lahko z majhno gesto naredili nekomu težko noč malo lažjo.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "🎁",
+                        name: "Izmenjava daril",
+                        situation: "Med izmenjavo daril nekdo prejme darilo, ki očitno ni po njegovem okusu. Poskuša biti vljuden, vendar izgleda razočaran.",
+                        choices: [
+                            {
+                                text: "Kasneje zasebno ponudite menjavo ali pomagajte najti nekaj, kar bi dejansko uživali, pri čemer pokažete, da ste opazili",
+                                compassion: 17,
+                                feedback: "Vaša premišljenost in diskrecija kažeta resnično skrb. Spremenili ste trenutek razočaranja v pozitivno izkušnjo, pri čemer spoštujete občutke drugih.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Naredite šalo, da razbremenite vzdušje",
+                                compassion: 5,
+                                feedback: "Poskušali ste pomagati, vendar humor morda ne obravnava njegovega dejanskega razočaranja. Včasih ljudje potrebujejo praktično pomoč, ne šale.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Ignorirajte to in predpostavite, da bo vse v redu",
+                                compassion: -2,
+                                feedback: "Niste želeli narediti neprijetno, vendar včasih je najbolj sočutna stvar opaziti in pomagati, tudi tiho.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "🚗",
+                        name: "Težave z avtom",
+                        situation: "Vidite nekoga ob cesti s težavami z avtomobilom. Poskuša zamenjati pnevmatiko, vendar se očitno muči. Zamujate.",
+                        choices: [
+                            {
+                                text: "Ustavite in pomagate, tudi če zaradi tega zamujate. Zagotovite, da je oseba varna",
+                                compassion: 22,
+                                feedback: "Vaša pomoč osebo vrne na cesto varno. Njena hvaležnost je ogromna in veste, da ste naredili pravo stvar. Varnost in prijaznost sta pomembnejša od urnikov.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Kratko se ustavite, da preverite, ali potrebuje pomoč, nato pokličite pomoč ob cesti",
+                                compassion: 12,
+                                feedback: "Zagotovili ste, da je oseba dobila pomoč, kar je dobro. Vendar včasih ljudje potrebujejo več kot telefonski klic—potrebujejo nekoga, ki ostane, dokler pomoč ne prispe.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Peljite mimo in predpostavite, da bo nekdo drug pomagal",
+                                compassion: -5,
+                                feedback: "Prišli ste pravočasno, vendar se ne morete znebiti skrbi za tisto osebo ob cesti. Včasih sočutje pomeni ustaviti se.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "📱",
+                        name: "Ustrahovanje na socialnih omrežjih",
+                        situation: "Opazite, da nekdo v vaši spletni skupnosti doživlja ustrahovanje v komentarjih. Oseba je očitno prizadeta, vendar se poskuša braniti sama.",
+                        choices: [
+                            {
+                                text: "Javno se postavite za to osebo, prijavite ustrahovalce in pošljite zasebno sporočilo podpore",
+                                compassion: 24,
+                                feedback: "Vaš pogum, da se postavite, naredi resnično razliko. Oseba se počuti podprto in manj osamljeno. Pokazali ste, da sočutje pomeni ukrepanje proti krivici.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Pošljite ji zasebno sporočilo podpore, vendar se javno ne vmešavajte",
+                                compassion: 10,
+                                feedback: "Vaša zasebna podpora pomaga, vendar včasih ljudje potrebujejo javne zaveznike. Postaviti se skupaj je močneje kot podpirati v tišini.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Ostanite zunaj tega, da se izognete drami",
+                                compassion: -4,
+                                feedback: "Izognili ste se konfliktu, vendar tišina ob ustrahovanju lahko izgleda kot odobravanje. Včasih sočutje pomeni vmešavanje.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "🎨",
+                        name: "Umetniška prijateljica",
+                        situation: "Prijateljica deli svoje ustvarjalno delo z vami, vendar očitno ni zelo dobro. Navdušena je in prosi za vaše iskreno mnenje.",
+                        choices: [
+                            {
+                                text: "Najdite iskrene stvari za pohvalo, nežno ponudite konstruktivno povratno informacijo in spodbujajte njeno strast",
+                                compassion: 18,
+                                feedback: "Vaš uravnotežen pristop ohranja njenjo zaupanje, medtem ko ji pomaga rasti. Pokazali ste, da sočutje pomeni biti prijazen, iskren in podporen.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Dajte nejasno pohvalo, da ne ranite njenih občutkov",
+                                compassion: 6,
+                                feedback: "Zaščitili ste njene občutke, vendar lahko čuti, da niste iskreni. Iskrena, nežna povratna informacija bi bila bolj koristna.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Bodite brutalno iskreni o tem, kako slabo je",
+                                compassion: -6,
+                                feedback: "Vaša iskrenost je uničila njen duh. Obstaja razlika med iskrenostjo in arogantnostjo. Sočutje včasih pomeni tudi najti način, kako biti iskren, ne da bi zatiral strasti drugih.",
+                                type: "negative"
+                            }
+                        ]
+                    }
+                ]
+            };
+            return allScenariosData[lang] || allScenariosData.en;
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initGame() {
+            compassionScore = 0;
+            livesTouched = 0;
+            currentScenario = 0;
+            selfCompassionExercise = 0;
+            quizActive = false;
+            quizProgress = 0;
+            document.getElementById('quizNumber').textContent = `0/1`;
+            document.getElementById('quizStat').classList.add('hidden');
+            document.getElementById('compassionQuiz').classList.add('hidden');
+            // Randomize scenarios and select the number for this game
+            const allScenarios = getScenariosForLanguage(currentLanguage);
+            gameScenarios = shuffleArray(allScenarios).slice(0, SCENARIOS_PER_GAME);
+            updateStats();
+            showScenario();
+        }
+
+        function showScenario() {
+            if (currentScenario >= gameScenarios.length) {
+                endGame();
+                return;
+            }
+
+            // Hide all other sections
+            document.getElementById('scenariosComplete').classList.add('hidden');
+            document.getElementById('selfCompassionTransition').classList.add('hidden');
+            document.getElementById('selfCompassionSection').classList.add('hidden');
+            document.getElementById('breathingExercise').classList.add('hidden');
+            document.getElementById('letterExercise').classList.add('hidden');
+            document.getElementById('gratitudeExercise').classList.add('hidden');
+            document.getElementById('mantraExercise').classList.add('hidden');
+            document.getElementById('compassionQuiz').classList.add('hidden');
+            document.getElementById('scenario').classList.remove('hidden');
+
+            const scenario = gameScenarios[currentScenario];
+            const scenarioDiv = document.getElementById('scenario');
+            
+            // Shuffle choices randomly
+            const shuffledChoices = shuffleArray([...scenario.choices]);
+            // Create mapping: newIndex -> originalIndex
+            const choiceMapping = shuffledChoices.map(shuffledChoice => 
+                scenario.choices.findIndex(originalChoice => originalChoice === shuffledChoice)
+            );
+            // Store mapping for this scenario
+            scenario._choiceMapping = choiceMapping;
+            
+            scenarioDiv.innerHTML = `
+                <div class="character">
+                    <div class="character-avatar">${scenario.character}</div>
+                    <div class="character-info">
+                        <h3>${scenario.name}</h3>
+                        <p class="scenario-text">${scenario.situation}</p>
+                    </div>
+                </div>
+                <div class="choices">
+                    ${shuffledChoices.map((choice, index) => 
+                        `<button class="choice-btn" onclick="makeChoice(${index})">${choice.text}</button>`
+                    ).join('')}
+                </div>
+                <div id="feedback"></div>
+            `;
+
+            updateProgress();
+        }
+
+        function makeChoice(choiceIndex) {
+            const scenario = gameScenarios[currentScenario];
+            // Map shuffled index back to original index
+            const originalIndex = scenario._choiceMapping ? scenario._choiceMapping[choiceIndex] : choiceIndex;
+            const choice = scenario.choices[originalIndex];
+            
+            // Disable all buttons
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.6';
+            });
+
+            // Update scores
+            compassionScore += choice.compassion;
+            let livesAdded = 0;
+            if (choice.compassion > 10) {
+                // Special case: Lost Dog scenario - best choice touches both dog and owner (2 lives)
+                const scenarioName = scenario.name;
+                const isLostDogScenario = scenarioName === "Izgubljen pes" || scenarioName === "Lost Dog";
+                // Check if this is the best choice (compassion: 18, type: positive)
+                if (isLostDogScenario && choice.compassion === 18 && choice.type === "positive") {
+                    livesTouched += 2;
+                    livesAdded = 2;
+                } else {
+                    livesTouched++;
+                    livesAdded = 1;
+                }
+            }
+
+            // Show feedback
+            const feedbackDiv = document.getElementById('feedback');
+            const t = translations[currentLanguage];
+            feedbackDiv.innerHTML = `
+                <div class="feedback ${choice.type}">
+                    <strong>${choice.feedback}</strong>
+                    ${choice.compassion > 0 ? `<div style="margin-top: 10px;">+${choice.compassion} ${t.points}</div>` : ''}
+                    ${livesAdded > 0 ? `<div style="margin-top: 5px;">+${livesAdded} ${t.livesTouched}</div>` : ''}
+                    <button class="ok-btn" onclick="nextScenario()">${t.ok}</button>
+                </div>
+            `;
+
+            updateStats();
+        }
+
+        function nextScenario() {
+            currentScenario++;
+            // After 8 scenarios (currentScenario === 8 means we've done 0-7, now showing completion)
+            if (currentScenario === 8) {
+                showScenariosComplete();
+            } else {
+                showScenario();
+            }
+        }
+
+        function showScenariosComplete() {
+            const t = translations[currentLanguage];
+            // Hide all other sections
+            document.getElementById('scenario').classList.add('hidden');
+            document.getElementById('selfCompassionTransition').classList.add('hidden');
+            document.getElementById('selfCompassionSection').classList.add('hidden');
+            document.getElementById('breathingExercise').classList.add('hidden');
+            document.getElementById('letterExercise').classList.add('hidden');
+            document.getElementById('gratitudeExercise').classList.add('hidden');
+            document.getElementById('mantraExercise').classList.add('hidden');
+            document.getElementById('compassionQuiz').classList.add('hidden');
+            document.getElementById('scenariosComplete').classList.remove('hidden');
+            
+            const completeDiv = document.getElementById('scenariosComplete');
+            const message = typeof t.scenariosCompleteMessage === 'function' 
+                ? t.scenariosCompleteMessage(compassionScore, livesTouched)
+                : t.scenariosCompleteMessage;
+            completeDiv.innerHTML = `
+                <h2>${t.scenariosCompleteTitle}</h2>
+                <div class="result-box">
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">${message}</p>
+                </div>
+                <button class="start-game-btn" onclick="showSelfCompassionTransition()">${t.transitionToSelfCompassion}</button>
+            `;
+        }
+
+        function showSelfCompassionTransition() {
+            const t = translations[currentLanguage];
+            // Hide all other sections
+            document.getElementById('scenario').classList.add('hidden');
+            document.getElementById('scenariosComplete').classList.add('hidden');
+            document.getElementById('selfCompassionSection').classList.add('hidden');
+            document.getElementById('breathingExercise').classList.add('hidden');
+            document.getElementById('letterExercise').classList.add('hidden');
+            document.getElementById('gratitudeExercise').classList.add('hidden');
+            document.getElementById('mantraExercise').classList.add('hidden');
+            document.getElementById('compassionQuiz').classList.add('hidden');
+            document.getElementById('selfCompassionTransition').classList.remove('hidden');
+            
+            // Don't reset progress bar yet - wait until first exercise starts
+            // Keep progress at 100% (scenarios complete) until first exercise begins
+            
+            const transitionDiv = document.getElementById('selfCompassionTransition');
+            transitionDiv.innerHTML = `
+                <h2>${t.selfCompassionPartTitle}</h2>
+                <p>${t.transitionToSelfCompassion}</p>
+                <button class="start-game-btn" onclick="showSelfCompassionIntro()">${t.startGame}</button>
+            `;
+        }
+
+        function showSelfCompassionIntro() {
+            const t = translations[currentLanguage];
+            // Hide all other sections
+            document.getElementById('scenario').classList.add('hidden');
+            document.getElementById('scenariosComplete').classList.add('hidden');
+            document.getElementById('selfCompassionTransition').classList.add('hidden');
+            document.getElementById('breathingExercise').classList.add('hidden');
+            document.getElementById('letterExercise').classList.add('hidden');
+            document.getElementById('gratitudeExercise').classList.add('hidden');
+            document.getElementById('mantraExercise').classList.add('hidden');
+            document.getElementById('compassionQuiz').classList.add('hidden');
+            document.getElementById('selfCompassionSection').classList.remove('hidden');
+            
+            // Reset progress bar for self-compassion exercises (0% - not started yet)
+            selfCompassionExercise = 0;
+            updateProgress();
+            updateStats(); // Update stats to show exercises instead of scenario
+            
+            const section = document.getElementById('selfCompassionSection');
+            const whatTitle = currentLanguage === 'sl' ? 'Kaj je samosočutje?' : 'What is Self-Compassion?';
+            const whyTitle = currentLanguage === 'sl' ? 'Zakaj je samosočutje pomembno?' : 'Why is Self-Compassion Important?';
+            
+            section.innerHTML = `
+                <h2>${t.selfCompassionTitle}</h2>
+                
+                <div class="self-compassion-content">
+                    <h3>${whatTitle}</h3>
+                    <p>${t.selfCompassionWhat}</p>
+                </div>
+
+                <div class="self-compassion-content">
+                    <h3>${whyTitle}</h3>
+                    <p>${t.selfCompassionWhy}</p>
+                    <ul>
+                        ${t.selfCompassionWhyList.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="breathing-description">
+                    <h3>${t.breathingExerciseTitle}</h3>
+                    <p>${t.breathingExerciseDescription}</p>
+                </div>
+
+                <button class="start-game-btn" onclick="startBreathingExercise()">${t.breathingStartBtn}</button>
+            `;
+        }
+
+        let breathingInterval = null;
+        let breathingTimeout = null;
+        let currentRound = 0;
+        let currentPhase = 'inhale'; // 'inhale', 'hold', 'exhale'
+        let currentSecond = 4;
+
+        function startBreathingExercise() {
+            const t = translations[currentLanguage];
+            document.getElementById('selfCompassionSection').classList.add('hidden');
+            document.getElementById('breathingExercise').classList.remove('hidden');
+            
+            // Mark first self-compassion exercise as started
+            selfCompassionExercise = 1;
+            updateProgress();
+            updateStats();
+            
+            currentRound = 0;
+            currentPhase = 'inhale';
+            currentSecond = 4;
+            
+            const exerciseDiv = document.getElementById('breathingExercise');
+            exerciseDiv.innerHTML = `
+                <h2>${t.breathingExerciseTitle}</h2>
+                <div class="breathing-container">
+                    <div class="breathing-circle" id="breathingCircle"></div>
+                    <div class="breathing-counter" id="breathingCounter">4</div>
+                </div>
+                <div class="breathing-phase" id="breathingPhase">${t.breathingInhale}</div>
+                <div class="breathing-repeat-counter" id="breathingRepeatCounter">${t.breathingRepeat} 1/4</div>
+                <button class="skip-btn" onclick="skipBreathingExercise()" style="margin-top: 20px;">${t.breathingSkipBtn}</button>
+            `;
+            
+            startBreathingPhase();
+        }
+
+        function startBreathingPhase() {
+            const t = translations[currentLanguage];
+            const circle = document.getElementById('breathingCircle');
+            const counter = document.getElementById('breathingCounter');
+            const phase = document.getElementById('breathingPhase');
+            const repeatCounter = document.getElementById('breathingRepeatCounter');
+            
+            // Remove all classes
+            circle.classList.remove('inhale', 'hold', 'exhale');
+            
+            // Set current phase and duration
+            let duration = 4; // default
+            if (currentPhase === 'inhale') {
+                phase.textContent = t.breathingInhale;
+                circle.classList.add('inhale');
+                duration = 4;
+            } else if (currentPhase === 'hold') {
+                phase.textContent = t.breathingHold;
+                circle.classList.add('hold');
+                duration = 7;
+            } else if (currentPhase === 'exhale') {
+                phase.textContent = t.breathingExhale;
+                circle.classList.add('exhale');
+                duration = 8;
+            }
+            
+            currentSecond = duration;
+            counter.textContent = currentSecond;
+            
+            breathingInterval = setInterval(() => {
+                currentSecond--;
+                counter.textContent = currentSecond;
+                
+                if (currentSecond <= 0) {
+                    clearInterval(breathingInterval);
+                    moveToNextPhase();
+                }
+            }, 1000);
+        }
+
+        function moveToNextPhase() {
+            const t = translations[currentLanguage];
+            
+            if (currentPhase === 'inhale') {
+                currentPhase = 'hold';
+                startBreathingPhase();
+            } else if (currentPhase === 'hold') {
+                currentPhase = 'exhale';
+                startBreathingPhase();
+            } else if (currentPhase === 'exhale') {
+                currentRound++;
+                
+                if (currentRound < 4) {
+                    currentPhase = 'inhale';
+                    document.getElementById('breathingRepeatCounter').textContent = `${t.breathingRepeat} ${currentRound + 1}/4`;
+                    startBreathingPhase();
+                } else {
+                    completeBreathingExercise();
+                }
+            }
+        }
+
+        function completeBreathingExercise() {
+            const t = translations[currentLanguage];
+            const exerciseDiv = document.getElementById('breathingExercise');
+            
+            // Award points for completing breathing exercise (no life yet - only at the end)
+            compassionScore += 20;
+            updateStats();
+            
+            exerciseDiv.innerHTML = `
+                <h2>${t.breathingExerciseTitle}</h2>
+                <div class="breathing-complete">
+                    <strong>${t.breathingComplete}</strong>
+                </div>
+                <div class="feedback positive" style="margin-top: 20px;">
+                    <div style="margin-top: 10px;">+20 ${t.points}</div>
+                </div>
+                <button class="start-game-btn" onclick="continueAfterBreathing()" style="margin-top: 20px;">${t.breathingContinueBtn}</button>
+            `;
+        }
+
+        function continueAfterBreathing() {
+            // Clear any intervals if still running
+            if (breathingInterval) {
+                clearInterval(breathingInterval);
+            }
+            if (breathingTimeout) {
+                clearTimeout(breathingTimeout);
+            }
+            
+            document.getElementById('breathingExercise').classList.add('hidden');
+            // After breathing exercise, show letter exercise
+            showLetterExercise();
+        }
+
+        function skipBreathingExercise() {
+            const t = translations[currentLanguage];
+            
+            // Clear any intervals if still running
+            if (breathingInterval) {
+                clearInterval(breathingInterval);
+            }
+            if (breathingTimeout) {
+                clearTimeout(breathingTimeout);
+            }
+            
+            // Award points for self-care (less than completing, but still acknowledging)
+            compassionScore += 10;
+            updateStats();
+            
+            const exerciseDiv = document.getElementById('breathingExercise');
+            exerciseDiv.innerHTML = `
+                <h2>${t.breathingSkipTitle}</h2>
+                <div class="breathing-complete" style="background: #e7f3ff; border-left-color: #667eea; color: #004085;">
+                    <p style="font-size: 1.1em; line-height: 1.8; margin-bottom: 20px;">${t.breathingSkipMessage}</p>
+                    <p style="font-weight: bold; margin-bottom: 10px;">${t.breathingSkipAlternative}</p>
+                    <ul style="text-align: left; margin-left: 20px; line-height: 1.8;">
+                        ${t.breathingSkipAlternatives.map(alt => `<li>${alt}</li>`).join('')}
+                    </ul>
+                </div>
+                <div class="feedback positive" style="margin-top: 20px;">
+                    <div style="margin-top: 10px;">+10 ${t.points}</div>
+                </div>
+                <button class="start-game-btn" onclick="showLetterExercise()" style="margin-top: 20px;">${t.breathingSkipContinue}</button>
+            `;
+        }
+
+        function showLetterExercise() {
+            const t = translations[currentLanguage];
+            // Hide all other sections
+            document.getElementById('scenario').classList.add('hidden');
+            document.getElementById('scenariosComplete').classList.add('hidden');
+            document.getElementById('selfCompassionTransition').classList.add('hidden');
+            document.getElementById('selfCompassionSection').classList.add('hidden');
+            document.getElementById('breathingExercise').classList.add('hidden');
+            document.getElementById('gratitudeExercise').classList.add('hidden');
+            document.getElementById('mantraExercise').classList.add('hidden');
+            document.getElementById('compassionQuiz').classList.add('hidden');
+            document.getElementById('letterExercise').classList.remove('hidden');
+            
+            // Mark second self-compassion exercise as started
+            selfCompassionExercise = 2;
+            updateProgress();
+            updateStats();
+            
+            const letterDiv = document.getElementById('letterExercise');
+            letterDiv.innerHTML = `
+                <h2>${t.letterExerciseTitle}</h2>
+                <div class="exercise-description">
+                    <p>${t.letterExerciseDescription}</p>
+                </div>
+                <textarea class="exercise-textarea" id="letterText" placeholder="${t.letterPlaceholder}"></textarea>
+                <button class="start-game-btn" onclick="continueAfterLetter()">${t.letterContinueBtn}</button>
+            `;
+        }
+
+        function continueAfterLetter() {
+            const t = translations[currentLanguage];
+            // Store the letter text (optional, for future use)
+            const letterText = document.getElementById('letterText')?.value ?? '';
+            const hasText = letterText.trim().length > 0;
+            const pointsEarned = hasText ? 15 : 5;
+            // Award points for completing the exercise (no life yet - only at the end)
+            compassionScore += pointsEarned;
+            updateStats();
+            
+            const letterDiv = document.getElementById('letterExercise');
+            letterDiv.innerHTML = `
+                <h2>${t.letterExerciseTitle}</h2>
+                <div class="breathing-complete">
+                    <strong>${hasText ? t.exerciseComplete : t.exerciseCompleteMental}</strong>
+                </div>
+                <div class="feedback positive" style="margin-top: 20px;">
+                    <div style="margin-top: 10px;">+${pointsEarned} ${t.points}</div>
+                </div>
+                <button class="start-game-btn" onclick="showGratitudeExercise()" style="margin-top: 20px;">${t.letterContinueBtn}</button>
+            `;
+        }
+
+        function showGratitudeExercise() {
+            const t = translations[currentLanguage];
+            // Hide all other sections
+            document.getElementById('scenario').classList.add('hidden');
+            document.getElementById('scenariosComplete').classList.add('hidden');
+            document.getElementById('selfCompassionTransition').classList.add('hidden');
+            document.getElementById('selfCompassionSection').classList.add('hidden');
+            document.getElementById('breathingExercise').classList.add('hidden');
+            document.getElementById('letterExercise').classList.add('hidden');
+            document.getElementById('mantraExercise').classList.add('hidden');
+            document.getElementById('compassionQuiz').classList.add('hidden');
+            document.getElementById('gratitudeExercise').classList.remove('hidden');
+            
+            // Mark third self-compassion exercise as started
+            selfCompassionExercise = 3;
+            updateProgress();
+            updateStats();
+            
+            const gratitudeDiv = document.getElementById('gratitudeExercise');
+            gratitudeDiv.innerHTML = `
+                <h2>${t.gratitudeExerciseTitle}</h2>
+                <div class="exercise-description">
+                    <p>${t.gratitudeExerciseDescription}</p>
+                </div>
+                <textarea class="exercise-textarea" id="gratitudeText" placeholder="${t.gratitudePlaceholder}"></textarea>
+                <button class="start-game-btn" onclick="continueAfterGratitude()">${t.gratitudeContinueBtn}</button>
+            `;
+        }
+
+        function continueAfterGratitude() {
+            const t = translations[currentLanguage];
+            // Store the gratitude text (optional, for future use)
+            const gratitudeText = document.getElementById('gratitudeText')?.value ?? '';
+            const hasText = gratitudeText.trim().length > 0;
+            const pointsEarned = hasText ? 15 : 5;
+            // Award points for completing the exercise (no life yet - only at the end)
+            compassionScore += pointsEarned;
+            updateStats();
+            
+            const gratitudeDiv = document.getElementById('gratitudeExercise');
+            gratitudeDiv.innerHTML = `
+                <h2>${t.gratitudeExerciseTitle}</h2>
+                <div class="breathing-complete">
+                    <strong>${hasText ? t.exerciseComplete : t.exerciseCompleteMental}</strong>
+                </div>
+                <div class="feedback positive" style="margin-top: 20px;">
+                    <div style="margin-top: 10px;">+${pointsEarned} ${t.points}</div>
+                </div>
+                <button class="start-game-btn" onclick="showMantraExercise()" style="margin-top: 20px;">${t.gratitudeContinueBtn}</button>
+            `;
+        }
+
+        function showMantraExercise() {
+            const t = translations[currentLanguage];
+            // Hide all other sections
+            document.getElementById('scenario').classList.add('hidden');
+            document.getElementById('scenariosComplete').classList.add('hidden');
+            document.getElementById('selfCompassionTransition').classList.add('hidden');
+            document.getElementById('selfCompassionSection').classList.add('hidden');
+            document.getElementById('breathingExercise').classList.add('hidden');
+            document.getElementById('letterExercise').classList.add('hidden');
+            document.getElementById('gratitudeExercise').classList.add('hidden');
+            document.getElementById('compassionQuiz').classList.add('hidden');
+            document.getElementById('mantraExercise').classList.remove('hidden');
+            
+            // Mark fourth self-compassion exercise as started
+            selfCompassionExercise = 4;
+            updateProgress();
+            updateStats();
+            
+            const mantraDiv = document.getElementById('mantraExercise');
+            mantraDiv.innerHTML = `
+                <h2>${t.mantraExerciseTitle}</h2>
+                <div class="exercise-description">
+                    <p>${t.mantraExerciseDescription}</p>
+                </div>
+                <textarea class="exercise-textarea" id="mantraText" placeholder="${t.mantraPlaceholder}"></textarea>
+                <button class="start-game-btn" onclick="continueAfterMantra()">${t.mantraContinueBtn}</button>
+            `;
+        }
+
+        function continueAfterMantra() {
+            const t = translations[currentLanguage];
+            // Store the mantra text (optional, for future use)
+            const mantraText = document.getElementById('mantraText')?.value ?? '';
+            const hasText = mantraText.trim().length > 0;
+            const pointsEarned = hasText ? 15 : 5;
+            // Award points for completing the exercise
+            compassionScore += pointsEarned;
+            // Add 1 life only at the end after all three exercises (your own life)
+            livesTouched++;
+            updateStats();
+            
+            const mantraDiv = document.getElementById('mantraExercise');
+            mantraDiv.innerHTML = `
+                <h2>${t.mantraExerciseTitle}</h2>
+                <div class="breathing-complete">
+                    <strong>${hasText ? t.exerciseComplete : t.exerciseCompleteMental}</strong>
+                </div>
+                <div class="feedback positive" style="margin-top: 20px;">
+                    <div style="margin-top: 10px;">+${pointsEarned} ${t.points}</div>
+                    <div style="margin-top: 5px;">+1 ${t.livesTouched}</div>
+                </div>
+                <button class="start-game-btn" onclick="showCompassionQuiz()" style="margin-top: 20px;">${t.continueToQuizBtn}</button>
+            `;
+        }
+
+        function updateUI() {
+            const t = translations[currentLanguage];
+            document.getElementById('gameTitle').textContent = t.title;
+            document.getElementById('gameSubtitle').textContent = t.subtitle;
+            document.getElementById('statCompassion').textContent = t.compassionScore;
+            document.getElementById('statLives').textContent = t.livesTouched;
+            document.getElementById('statScenario').textContent = t.scenario;
+            document.getElementById('statExercises').textContent = t.exercises;
+            document.getElementById('statQuiz').textContent = t.quiz;
+            document.getElementById('gameOverTitle').textContent = t.gameOverTitle;
+            document.getElementById('gameOverMessage').textContent = t.gameOverMessage;
+            document.getElementById('restartBtn').textContent = t.playAgain;
+            
+            // Update tutorial
+            document.getElementById('tutorialTitle').textContent = t.tutorialTitle;
+            document.getElementById('tutorialWhatTitle').textContent = t.tutorialWhatTitle;
+            document.getElementById('tutorialWhatText').textContent = t.tutorialWhatText;
+            document.getElementById('tutorialWhyTitle').textContent = t.tutorialWhyTitle;
+            document.getElementById('tutorialWhyText').textContent = t.tutorialWhyText;
+            document.getElementById('tutorialHowTitle').textContent = t.tutorialHowTitle;
+            document.getElementById('tutorialHowText').textContent = t.tutorialHowText;
+            document.getElementById('startGameBtn').textContent = t.startGame;
+            
+            // Update list
+            const listElement = document.getElementById('tutorialWhyList');
+            listElement.innerHTML = '';
+            t.tutorialWhyList.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                listElement.appendChild(li);
+            });
+        }
+
+        function startGame() {
+            document.getElementById('tutorial').classList.add('hidden');
+            document.getElementById('statsContainer').classList.remove('hidden');
+            document.getElementById('progressBarContainer').classList.remove('hidden');
+            document.getElementById('gameContent').classList.remove('hidden');
+            initGame();
+        }
+
+        function updateStats() {
+            document.getElementById('compassionScore').textContent = compassionScore;
+            document.getElementById('livesTouched').textContent = livesTouched;
+            
+            // Show scenario / exercises / quiz based on current phase
+            if (quizActive) {
+                document.getElementById('scenarioStat').classList.add('hidden');
+                document.getElementById('exercisesStat').classList.add('hidden');
+                document.getElementById('quizStat').classList.remove('hidden');
+                document.getElementById('quizNumber').textContent = `${quizProgress}/1`;
+                return;
+            }
+
+            document.getElementById('quizStat').classList.add('hidden');
+
+            if (selfCompassionExercise >= 0 && currentScenario >= SCENARIOS_PER_GAME) {
+                // In self-compassion section - show exercises
+                document.getElementById('scenarioStat').classList.add('hidden');
+                document.getElementById('exercisesStat').classList.remove('hidden');
+                document.getElementById('exercisesNumber').textContent = `${selfCompassionExercise}/4`;
+            } else {
+                // In scenarios section - show scenario
+                document.getElementById('scenarioStat').classList.remove('hidden');
+                document.getElementById('exercisesStat').classList.add('hidden');
+                document.getElementById('scenarioNumber').textContent = `${currentScenario + 1}/${gameScenarios.length}`;
+            }
+        }
+
+        function updateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            let progress = 0;
+            
+            // Check if we're in self-compassion section (intro or exercises)
+            // selfCompassionExercise is set to 0 when intro is shown, > 0 for exercises
+            if (selfCompassionExercise >= 0 && currentScenario >= SCENARIOS_PER_GAME) {
+                // We've completed scenarios, now in self-compassion section
+                if (selfCompassionExercise === 0) {
+                    // At intro screen, show 0% (just started self-compassion)
+                    progress = 0;
+                } else {
+                    // Progress through 4 self-compassion exercises (1, 2, 3, 4)
+                    const totalExercises = 4;
+                    progress = (selfCompassionExercise / totalExercises) * 100;
+                }
+            } else {
+                // Progress through scenarios
+                const totalScenarios = gameScenarios.length || SCENARIOS_PER_GAME;
+                if (totalScenarios > 0) {
+                    progress = ((currentScenario + 1) / totalScenarios) * 100;
+                } else {
+                    progress = 0;
+                }
+            }
+            
+            progressBar.style.width = `${progress}%`;
+            progressBar.textContent = `${Math.round(progress)}%`;
+        }
+
+        let quizMatches = {}; // Store question index -> answer box id matches
+        let quizShuffledQuestions = []; // Store shuffled questions for validation
+        let quizAnswerTexts = {}; // Store answer box id -> answer text mapping
+
+        function showCompassionQuiz() {
+            const t = translations[currentLanguage];
+            // Hide all other sections
+            document.getElementById('scenario').classList.add('hidden');
+            document.getElementById('scenariosComplete').classList.add('hidden');
+            document.getElementById('selfCompassionTransition').classList.add('hidden');
+            document.getElementById('selfCompassionSection').classList.add('hidden');
+            document.getElementById('breathingExercise').classList.add('hidden');
+            document.getElementById('letterExercise').classList.add('hidden');
+            document.getElementById('gratitudeExercise').classList.add('hidden');
+            document.getElementById('mantraExercise').classList.add('hidden');
+            document.getElementById('compassionQuiz').classList.remove('hidden');
+
+            // Switch stats category from exercises -> quiz
+            quizActive = true;
+            quizProgress = 0;
+            updateStats();
+            
+            const quizData = compassionQuizData[currentLanguage];
+            // Shuffle questions
+            quizShuffledQuestions = shuffleArray([...quizData]);
+            
+            // Collect all answers and shuffle them
+            const allAnswers = [];
+            quizShuffledQuestions.forEach((q) => {
+                allAnswers.push(...q.answers);
+            });
+            const shuffledAnswers = shuffleArray([...allAnswers]);
+            
+            // Reset matches
+            quizMatches = {};
+            quizAnswerTexts = {};
+            
+            const quizDiv = document.getElementById('compassionQuiz');
+            quizDiv.innerHTML = `
+                <h2>${t.compassionQuizTitle}</h2>
+                <div class="quiz-description">
+                    <p>${t.compassionQuizDescription}</p>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">${t.quizDragInstruction}</p>
+                </div>
+                <div class="quiz-container">
+                    <div class="quiz-questions-column">
+                        ${quizShuffledQuestions.map((q, qIndex) => `
+                            <div class="quiz-question-box" 
+                                 id="question-${qIndex}" 
+                                 ondrop="dropAnswer(event, ${qIndex})" 
+                                 ondragover="allowDrop(event)">
+                                <div>${q.question}</div>
+                                <div class="quiz-dropped-answer" id="answer-${qIndex}" style="display: none;"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="quiz-answers-column">
+                        ${shuffledAnswers.map((answer, aIndex) => {
+                            quizAnswerTexts[`answer-box-${aIndex}`] = answer;
+                            return `
+                            <div class="quiz-answer-box" 
+                                 id="answer-box-${aIndex}"
+                                 draggable="true" 
+                                 ondragstart="dragStart(event, 'answer-box-${aIndex}')"
+                                 data-answer="${answer}">
+                                ${answer}
+                            </div>
+                        `;
+                        }).join('')}
+                    </div>
+                </div>
+                <button class="start-game-btn" onclick="submitQuiz()" style="margin-top: 30px;">${t.quizSubmitBtn}</button>
+            `;
+        }
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function dragStart(ev, answerBoxId) {
+            ev.dataTransfer.setData("text", answerBoxId);
+            const answerBox = document.getElementById(answerBoxId);
+            answerBox.classList.add('dragging');
+        }
+
+        function dropAnswer(ev, questionIndex) {
+            ev.preventDefault();
+            const answerBoxId = ev.dataTransfer.getData("text");
+            const answerBox = document.getElementById(answerBoxId);
+            
+            // Remove dragging class
+            answerBox.classList.remove('dragging');
+            
+            // Check if answer box is already used
+            if (answerBox.classList.contains('used')) {
+                return;
+            }
+            
+            // Remove previous answer if exists
+            if (quizMatches[questionIndex]) {
+                const prevAnswerBoxId = quizMatches[questionIndex];
+                const prevAnswerBox = document.getElementById(prevAnswerBoxId);
+                if (prevAnswerBox) {
+                    prevAnswerBox.classList.remove('used');
+                }
+            }
+            
+            // Mark answer as used
+            answerBox.classList.add('used');
+            
+            // Store match
+            quizMatches[questionIndex] = answerBoxId;
+            
+            // Update question box
+            const questionBox = document.getElementById(`question-${questionIndex}`);
+            questionBox.classList.add('has-answer');
+            const answerDiv = document.getElementById(`answer-${questionIndex}`);
+            const answerText = quizAnswerTexts[answerBoxId];
+            answerDiv.textContent = answerText;
+            answerDiv.style.display = 'block';
+        }
+
+        function submitQuiz() {
+            const t = translations[currentLanguage];
+            
+            let correctCount = 0;
+            const totalQuestions = quizShuffledQuestions.length;
+            
+            // Validate each match
+            Object.keys(quizMatches).forEach(qIndex => {
+                const answerBoxId = quizMatches[qIndex];
+                const answerText = quizAnswerTexts[answerBoxId];
+                const question = quizShuffledQuestions[parseInt(qIndex)];
+                
+                // Check if this answer is correct for this question
+                if (question && question.answers[question.correctIndex] === answerText) {
+                    correctCount++;
+                }
+            });
+            
+            // Award points based on correct answers (10 points per correct answer)
+            const pointsEarned = correctCount * 10;
+            compassionScore += pointsEarned;
+            quizProgress = 1;
+            updateStats();
+            
+            const quizDiv = document.getElementById('compassionQuiz');
+            const message = typeof t.quizResultsMessage === 'function' 
+                ? t.quizResultsMessage(correctCount, totalQuestions)
+                : t.quizResultsMessage;
+            
+            quizDiv.innerHTML = `
+                <h2>${t.quizResultsTitle}</h2>
+                <div class="quiz-results">
+                    <strong>${message}</strong>
+                </div>
+                <div class="feedback positive" style="margin-top: 20px;">
+                    <div style="margin-top: 10px;">+${pointsEarned} ${t.points}</div>
+                </div>
+                <button class="start-game-btn" onclick="continueAfterQuiz()" style="margin-top: 20px;">${t.quizContinueBtn}</button>
+            `;
+        }
+
+        function continueAfterQuiz() {
+            document.getElementById('compassionQuiz').classList.add('hidden');
+            endGame();
+        }
+
+        function endGame() {
+            document.getElementById('gameContent').classList.add('hidden');
+            document.getElementById('gameOver').classList.remove('hidden');
+            
+            const t = translations[currentLanguage];
+            let message = '';
+            if (compassionScore >= 120) {
+                message = t.finalScore.exceptional(compassionScore, livesTouched);
+            } else if (compassionScore >= 80) {
+                message = t.finalScore.wonderful(compassionScore, livesTouched);
+            } else if (compassionScore >= 50) {
+                message = t.finalScore.good(compassionScore, livesTouched);
+            } else {
+                message = t.finalScore.default(compassionScore, livesTouched);
+            }
+            
+            document.getElementById('finalScore').innerHTML = message;
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            // Save preference to localStorage
+            localStorage.setItem('compassionQuestLanguage', lang);
+            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+            document.getElementById('lang-sl').classList.toggle('active', lang === 'sl');
+            updateUI();
+            // Only restart game if it's already started
+            if (document.getElementById('gameContent').classList.contains('hidden') === false) {
+                if (gameScenarios.length > 0 || currentScenario > 0) {
+                    initGame();
+                }
+            }
+        }
+
+        function initializeLanguage() {
+            // Set active button based on current language
+            document.getElementById('lang-en').classList.toggle('active', currentLanguage === 'en');
+            document.getElementById('lang-sl').classList.toggle('active', currentLanguage === 'sl');
+        }
+
+        function restartGame() {
+            document.getElementById('gameContent').classList.remove('hidden');
+            document.getElementById('gameOver').classList.add('hidden');
+            initGame();
+        }
+
+        // Initialize language and UI, then show tutorial
+        initializeLanguage();
+        updateUI();
+    </script>
+</body>
+</html>
