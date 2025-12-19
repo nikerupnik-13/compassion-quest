@@ -2921,6 +2921,11 @@
             // Add 1 life only at the end after all three exercises (your own life)
             livesTouched++;
             updateStats();
+
+            // We're done with exercises; reset progress for the final quiz phase
+            quizActive = true;
+            quizProgress = 0;
+            updateProgress();
             
             const mantraDiv = document.getElementById('mantraExercise');
             mantraDiv.innerHTML = `
@@ -2995,6 +3000,14 @@
         function updateProgress() {
             const progressBar = document.getElementById('progressBar');
             let progress = 0;
+
+            // Final quiz phase: start at 0% and reach 100% when quiz is completed
+            if (quizActive) {
+                progress = (quizProgress / 1) * 100;
+                progressBar.style.width = `${progress}%`;
+                progressBar.textContent = `${Math.round(progress)}%`;
+                return;
+            }
             
             // Check if we're in self-compassion section (intro or exercises)
             // selfCompassionExercise is set to 0 when intro is shown, > 0 for exercises
@@ -3165,10 +3178,11 @@
             document.getElementById('mantraExercise').classList.add('hidden');
             document.getElementById('compassionQuiz').classList.remove('hidden');
 
-            // Switch stats category from exercises -> quiz
+            // Quiz phase (progress starts at 0 until submit)
             quizActive = true;
             quizProgress = 0;
             updateStats();
+            updateProgress();
             
             const quizData = compassionQuizData[currentLanguage];
             // Shuffle questions
@@ -3270,6 +3284,7 @@
             compassionScore += pointsEarned;
             quizProgress = 1;
             updateStats();
+            updateProgress();
             
             const quizDiv = document.getElementById('compassionQuiz');
             const message = typeof t.quizResultsMessage === 'function' 
