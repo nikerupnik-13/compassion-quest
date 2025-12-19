@@ -480,6 +480,24 @@
             margin: 30px auto;
         }
 
+        .breathing-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            --p: 0deg;
+            background: conic-gradient(#9aa0a6 var(--p), rgba(154, 160, 166, 0.18) 0);
+            -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 10px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 10px));
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .breathing-ring.active {
+            opacity: 1;
+        }
+
         .breathing-circle {
             position: absolute;
             top: 50%;
@@ -491,6 +509,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             transition: all 1s ease;
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            z-index: 2;
         }
 
         .breathing-circle.inhale {
@@ -2542,6 +2561,22 @@
         let currentPhase = 'inhale'; // 'inhale', 'hold', 'exhale'
         let currentSecond = 4;
 
+        function setBreathingRingProgress(progress01) {
+            const ring = document.getElementById('breathingRing');
+            if (!ring) return;
+            const clamped = Math.max(0, Math.min(1, progress01));
+            ring.style.setProperty('--p', `${clamped * 360}deg`);
+        }
+
+        function setBreathingRingActive(active) {
+            const ring = document.getElementById('breathingRing');
+            if (!ring) return;
+            ring.classList.toggle('active', active);
+            if (!active) {
+                setBreathingRingProgress(0);
+            }
+        }
+
         function startBreathingExercise() {
             const t = translations[currentLanguage];
             document.getElementById('selfCompassionSection').classList.add('hidden');
@@ -2560,6 +2595,7 @@
             exerciseDiv.innerHTML = `
                 <h2>${t.breathingExerciseTitle}</h2>
                 <div class="breathing-container">
+                    <div class="breathing-ring" id="breathingRing" aria-hidden="true"></div>
                     <div class="breathing-circle" id="breathingCircle"></div>
                     <div class="breathing-counter" id="breathingCounter">4</div>
                 </div>
@@ -2587,24 +2623,38 @@
                 phase.textContent = t.breathingInhale;
                 circle.classList.add('inhale');
                 duration = 4;
+                setBreathingRingActive(false);
             } else if (currentPhase === 'hold') {
                 phase.textContent = t.breathingHold;
                 circle.classList.add('hold');
                 duration = 7;
+                setBreathingRingActive(true);
+                setBreathingRingProgress(0);
             } else if (currentPhase === 'exhale') {
                 phase.textContent = t.breathingExhale;
                 circle.classList.add('exhale');
                 duration = 8;
+                setBreathingRingActive(false);
             }
             
             currentSecond = duration;
             counter.textContent = currentSecond;
+
+            const phaseDuration = duration;
             
             breathingInterval = setInterval(() => {
                 currentSecond--;
                 counter.textContent = currentSecond;
+
+                // Fill ring only during hold phase
+                if (currentPhase === 'hold') {
+                    setBreathingRingProgress((phaseDuration - currentSecond) / phaseDuration);
+                }
                 
                 if (currentSecond <= 0) {
+                    if (currentPhase === 'hold') {
+                        setBreathingRingProgress(1);
+                    }
                     clearInterval(breathingInterval);
                     moveToNextPhase();
                 }
