@@ -2430,6 +2430,9 @@
             document.getElementById('mantraExercise').classList.add('hidden');
             document.getElementById('compassionQuiz').classList.add('hidden');
             document.getElementById('scenariosComplete').classList.remove('hidden');
+
+            // We've completed all scenarios; show 100% progress
+            updateProgress();
             
             const completeDiv = document.getElementById('scenariosComplete');
             const message = typeof t.scenariosCompleteMessage === 'function' 
@@ -2926,7 +2929,8 @@
                 // Progress through scenarios
                 const totalScenarios = gameScenarios.length || SCENARIOS_PER_GAME;
                 if (totalScenarios > 0) {
-                    progress = ((currentScenario + 1) / totalScenarios) * 100;
+                    // Start at 0% on the first scenario; reach 100% when all scenarios are completed
+                    progress = (currentScenario / totalScenarios) * 100;
                 } else {
                     progress = 0;
                 }
