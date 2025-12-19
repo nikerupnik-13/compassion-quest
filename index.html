@@ -909,11 +909,11 @@
                 <div class="stat-label" id="statScenario">Scenario</div>
                 <div class="stat-value" id="scenarioNumber">1/8</div>
             </div>
-            <div class="stat-item hidden" id="exercisesStat">
+            <div class="stat-item" id="exercisesStat">
                 <div class="stat-label" id="statExercises">Exercises</div>
                 <div class="stat-value" id="exercisesNumber">0/4</div>
             </div>
-            <div class="stat-item hidden" id="quizStat">
+            <div class="stat-item" id="quizStat">
                 <div class="stat-label" id="statQuiz">Test</div>
                 <div class="stat-value" id="quizNumber">0/1</div>
             </div>
@@ -2314,8 +2314,9 @@
             selfCompassionExercise = 0;
             quizActive = false;
             quizProgress = 0;
+            document.getElementById('scenarioNumber').textContent = `1/${SCENARIOS_PER_GAME}`;
+            document.getElementById('exercisesNumber').textContent = `0/4`;
             document.getElementById('quizNumber').textContent = `0/1`;
-            document.getElementById('quizStat').classList.add('hidden');
             document.getElementById('compassionQuiz').classList.add('hidden');
             // Randomize scenarios and select the number for this game
             const allScenarios = getScenariosForLanguage(currentLanguage);
@@ -2892,29 +2893,16 @@
         function updateStats() {
             document.getElementById('compassionScore').textContent = compassionScore;
             document.getElementById('livesTouched').textContent = livesTouched;
-            
-            // Show scenario / exercises / quiz based on current phase
-            if (quizActive) {
-                document.getElementById('scenarioStat').classList.add('hidden');
-                document.getElementById('exercisesStat').classList.add('hidden');
-                document.getElementById('quizStat').classList.remove('hidden');
-                document.getElementById('quizNumber').textContent = `${quizProgress}/1`;
-                return;
-            }
 
-            document.getElementById('quizStat').classList.add('hidden');
+            // Always show all categories; just update their counters
+            const totalScenarios = gameScenarios.length || SCENARIOS_PER_GAME;
+            const scenarioDisplay = currentScenario >= totalScenarios
+                ? `${totalScenarios}/${totalScenarios}`
+                : `${currentScenario + 1}/${totalScenarios}`;
+            document.getElementById('scenarioNumber').textContent = scenarioDisplay;
 
-            if (selfCompassionExercise >= 0 && currentScenario >= SCENARIOS_PER_GAME) {
-                // In self-compassion section - show exercises
-                document.getElementById('scenarioStat').classList.add('hidden');
-                document.getElementById('exercisesStat').classList.remove('hidden');
-                document.getElementById('exercisesNumber').textContent = `${selfCompassionExercise}/4`;
-            } else {
-                // In scenarios section - show scenario
-                document.getElementById('scenarioStat').classList.remove('hidden');
-                document.getElementById('exercisesStat').classList.add('hidden');
-                document.getElementById('scenarioNumber').textContent = `${currentScenario + 1}/${gameScenarios.length}`;
-            }
+            document.getElementById('exercisesNumber').textContent = `${Math.min(selfCompassionExercise, 4)}/4`;
+            document.getElementById('quizNumber').textContent = `${quizProgress}/1`;
         }
 
         function updateProgress() {
