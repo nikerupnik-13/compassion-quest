@@ -1397,7 +1397,6 @@
                         choices: [
                             {
                                 text: "Stop and help carry the groceries, even if it makes you late",
-                                compassion: 15,
                                 feedback: "Your neighbor is grateful and you feel good about helping. Sometimes being late is worth it when someone needs you.",
                                 type: "positive"
                             },
@@ -1536,31 +1535,6 @@
                         text: "Let someone else help them, you're busy with your friends",
                         compassion: -3,
                         feedback: "You stayed in your comfort zone, but that new student spent lunch alone. A small gesture could have made a huge difference.",
-                        type: "negative"
-                    }
-                ]
-            },
-            {
-                character: "🌧️",
-                name: "Homeless Person",
-                situation: "You pass by someone who appears to be homeless, sitting in the rain. They're not asking for anything, just trying to stay dry.",
-                choices: [
-                    {
-                        text: "Offer to buy them a warm meal and find them shelter information",
-                        compassion: 25,
-                        feedback: "Your genuine care and practical help restores their hope. You treated them with dignity and respect. This is true compassion.",
-                        type: "positive"
-                    },
-                    {
-                        text: "Give them some spare change",
-                        compassion: 10,
-                        feedback: "Your generosity helps, but they might need more than money. Still, every act of kindness matters.",
-                        type: "neutral"
-                    },
-                    {
-                        text: "Walk by quickly, unsure what to do",
-                        compassion: -2,
-                        feedback: "You felt uncomfortable, which is understandable. But sometimes the most compassionate thing is to acknowledge someone's humanity.",
                         type: "negative"
                     }
                 ]
@@ -1966,14 +1940,12 @@
                 ]
             },
             {
-                character: "🚌",
-                name: "Loud Transit Rider",
-                situation: "On public transport, someone is speaking very loudly and aggressively on the phone. People are staring, and you feel uncomfortable.",
+                character: "🚶",
+                name: "Blocked Sidewalk",
+                situation: "You're in a hurry and someone ahead is walking slowly, taking up most of the sidewalk. You feel impatience and judgment.",
                 choices: [
                     {
-                        text: "If it feels safe, ask them calmly to lower their voice; otherwise, quietly move away",
-                        compassion: 15,
-                        feedback: "You prioritized safety while choosing a respectful approach. We rarely know the full context—stress, conflict, or overwhelm—but you didn’t dehumanize them. Compassion is wise when it includes self-protection.",
+                        text: "Politely ask if you can pass, and assume there may be a reason for their pace",—stress, conflict, or overwhelm—but you didn’t dehumanize them. Compassion is wise when it includes self-protection.",
                         type: "positive"
                     },
                     {
@@ -2114,6 +2086,31 @@
                         type: "negative"
                     }
                 ]
+            },
+            {
+                character: "✉️",
+                name: "Sharp Email",
+                situation: "You receive a short, sharp email that blames you for a delay: “This should have been done already. Please fix ASAP.” Your stomach drops and you feel defensive.",
+                choices: [
+                    {
+                        text: "Pause, ask for specifics calmly, and clarify what you can do next—without apologizing for things you didn’t cause",
+                        compassion: 18,
+                        feedback: "You responded with clarity and boundaries instead of reacting from shame. The sender may be stressed or under pressure, but you don’t have to accept blame without context. Compassion here is staying respectful while protecting your dignity.",
+                        type: "positive"
+                    },
+                    {
+                        text: "Reply briefly with “Ok” and start working on it, while feeling resentful",
+                        compassion: 6,
+                        feedback: "You kept things moving, but the resentment stays in your body. Sometimes the most compassionate choice includes a small clarification, so you don’t carry unnecessary blame or confusion.",
+                        type: "neutral"
+                    },
+                    {
+                        text: "Reply defensively and list everything they did wrong",
+                        compassion: -4,
+                        feedback: "It’s understandable to want to defend yourself, but a blame spiral usually escalates. Compassion doesn’t mean being passive—it means choosing communication that reduces harm and makes solutions more likely.",
+                        type: "negative"
+                    }
+                ]
             }
                 ],
                 sl: [
@@ -2124,7 +2121,6 @@
                         choices: [
                             {
                                 text: "Ustavite se in pomagate prenesti nakupovalne vrečke, tudi če zaradi tega zamujate",
-                                compassion: 15,
                                 feedback: "Vaš sosed je hvaležen in vi se počutite dobro, ker ste pomagali. Včasih je zamuda vredna, ko vas nekdo potrebuje.",
                                 type: "positive"
                             },
@@ -2620,24 +2616,24 @@
                     {
                         character: "🚗",
                         name: "Nestrpen voznik",
-                        situation: "Vozite previdno, ko vam avto za vami začne voziti čisto za ritjo in trobiti. V telesu začutite napetost in naraščajočo jezo.",
+                        situation: "Vozite previdno, za vami pa se približa avto, ki vam vozi čisto za ritjo in začne trobiti. V telesu začutite napetost in naraščajočo jezo.",
                         choices: [
                             {
-                                text: "Ostanete mirni, držite varen tempo in mu varno omogočite prehitevanje, ko je to mogoče",
+                                text: "Ostanete mirni, držite varen tempo in mu omogočite varno prehitevanje, ko je to mogoče",
                                 compassion: 17,
-                                feedback: "Izbrali ste varnost in samonadzor. Ne veste, kaj se dogaja v drugem avtu—morda urgenca, stresen dan ali slaba samoregulacija—ampak niste dolivali olja na ogenj. Sočutje tu vključuje tudi zaščito sebe in drugih ter neeskaliranje.",
+                                feedback: "Izbrali ste varnost in samonadzor. Ne veste, kaj se dogaja v drugem avtu - morda urgenca, stresen dan ali slaba samoregulacija - ampak niste dolivali olja na ogenj. Sočutje tu vključuje tudi zaščito sebe in drugih ter neeskaliranje.",
                                 type: "positive"
                             },
                             {
                                 text: "Ignorirate ga in se osredotočite na cesto, a v glavi ves čas premlevate, kako nesramen je",
                                 compassion: 6,
-                                feedback: "Niste eskalirali, kar je pomembno. A premlevanje ohranja vaš stres visok. Sočutje je lahko do drugih in do sebe: spuščanje misli ščiti tudi vaš živčni sistem.",
+                                feedback: "Niste eskalirali, kar je dobro. A premlevanje ohranja vaš stres visok. Sočutje je pomembno tako do drugih kot do sebe: spuščanje misli ščiti tudi vaš živčni sistem.",
                                 type: "neutral"
                             },
                             {
                                 text: "Zatrobite nazaj ali namenoma zavrete, da ga »naučite lekcije«",
                                 compassion: -6,
-                                feedback: "Maščevanje se lahko hitro spremeni v nevarno situacijo. Tudi če je njegovo vedenje nesprejemljivo, eskalacija ogroža vse. Sočutje ne pomeni odobravanja—pomeni izbrati najvarnejši, najmanj škodljiv odziv.",
+                                feedback: "Maščevanje se lahko hitro spremeni v nevarno situacijo. Tudi če je njegovo vedenje nesprejemljivo, eskalacija ogroža vse. Sočutje ne pomeni odobravanja - pomeni izbrati najvarnejši, najmanj škodljiv odziv.",
                                 type: "negative"
                             }
                         ]
@@ -2656,13 +2652,13 @@
                             {
                                 text: "Molčite, hitro plačate in odidete",
                                 compassion: 6,
-                                feedback: "Zaščitili ste se z umikom, kar je povsem legitimno. Sočutje je lahko tiho. Včasih pomaga tudi notranji opomnik: »Morda to ni o meni«—da lažje spustite dogodek.",
+                                feedback: "Zaščitili ste se z umikom, kar je povsem legitimno. Sočutje je lahko tiho. Včasih pomaga tudi notranji opomnik: »Morda to ni o meni« - da lažje spustite dogodek.",
                                 type: "neutral"
                             },
                             {
                                 text: "Odvrnete ostro, da začuti, kako je",
                                 compassion: -4,
-                                feedback: "Razumljivo je, da se želite postaviti zase, a ostra reakcija navadno le poveča napetost. Sočutje ne opravičuje nesramnosti—izbere odziv, ki zmanjša škodo in ohrani vaše dostojanstvo.",
+                                feedback: "Razumljivo je, da se želite postaviti zase, a ostra reakcija navadno le poveča napetost. Sočutje ne podpira nesramnosti – sočutje je izbera odziva, ki zmanjša škodo in ohrani vaše dostojanstvo.",
                                 type: "negative"
                             }
                         ]
@@ -2673,9 +2669,9 @@
                         situation: "V čakalnici nekdo glasno razlaga, da so zaposleni nesposobni in da je vse prepočasno. V prostoru se začne nabirati napetost.",
                         choices: [
                             {
-                                text: "Priznate njegovo frustracijo in nežno predlagate, naj se osredotoči na to, kar lahko med čakanjem nadzira",
+                                text: "Osebi, ki se pritožuje priznate frustracijo in nežno predlagate, naj se osredotoči na to, kar lahko med čakanjem nadzira",
                                 compassion: 18,
-                                feedback: "Dali ste prostor čustvom, ne da bi podprli nespoštovanje. Včasih strah, bolečina ali negotovost pridejo ven kot razdražljivost. Sočutje je lahko toplina in struktura—pomagate umiriti prostor brez sramotenja.",
+                                feedback: "Dali ste prostor čustvom, ne da bi podprli nespoštovanje. Včasih strah, bolečina ali negotovost pridejo ven kot razdražljivost. Sočutje je lahko toplina in struktura - pomagate umiriti prostor brez sramotenja.",
                                 type: "positive"
                             },
                             {
@@ -2685,34 +2681,9 @@
                                 type: "neutral"
                             },
                             {
-                                text: "Rečete mu, naj neha jamrati in biti nespoštljiv",
+                                text: "Osebi rečete, naj neha jamrati in biti nespoštljiva",
                                 compassion: -4,
                                 feedback: "Ostra graja pogosto stopnjuje situacijo. Meje se da postaviti tudi brez poniževanja. Sočutje vključuje zmanjševanje škode, tudi ko je nekdo zahteven.",
-                                type: "negative"
-                            }
-                        ]
-                    },
-                    {
-                        character: "🚌",
-                        name: "Glasen potnik",
-                        situation: "Na avtobusu nekdo zelo glasno in agresivno govori po telefonu. Ljudje strmijo, vi pa se počutite nelagodno.",
-                        choices: [
-                            {
-                                text: "Če je varno, ga mirno prosite, naj utiša glas; sicer se tiho odmaknete",
-                                compassion: 15,
-                                feedback: "Dali ste prednost varnosti in izbrali spoštljiv pristop. Redko poznamo cel kontekst—stres, konflikt ali preobremenjenost—ampak niste ga razčlovečili. Modro sočutje vključuje tudi samozaščito.",
-                                type: "positive"
-                            },
-                            {
-                                text: "Vstavite slušalke in poskušate to ignorirati",
-                                compassion: 6,
-                                feedback: "To je praktičen način, da poskrbite zase. Niste eskalirali. Če ste vseeno napeti, vam lahko pomaga počasen vdih, da se telo umiri. Sočutje je lahko tudi regulacija sebe.",
-                                type: "neutral"
-                            },
-                            {
-                                text: "Ostro se zapletete v prepir, da mu pokažete, da nima prav",
-                                compassion: -5,
-                                feedback: "Javne konfrontacije se lahko hitro spremenijo v nevarne. Tudi če je oseba moteča, jeza redko prinese mir. Sočutje izbira najmanj škodljivo strategijo, ne najglasnejšo.",
                                 type: "negative"
                             }
                         ]
@@ -2731,13 +2702,13 @@
                             {
                                 text: "Zavzdihnete in čakate za njim, pri tem pa ste jezni",
                                 compassion: 5,
-                                feedback: "Niste mu škodovali, kar je pomembno. A notranja jeza vas stane. Sočuten preokvir—»Ne poznam njegove zgodbe«—lahko zmehča stres in vas prizemlji.",
+                                feedback: "Niste mu škodovali, kar je pomembno. A notranja jeza vas stane. Sočuten preokvir - »Ne poznam njegove zgodbe« - lahko zmehča stres in vas prizemlji.",
                                 type: "neutral"
                             },
                             {
                                 text: "Rineš mimo in nekaj nejevoljno zamomljaš",
                                 compassion: -4,
-                                feedback: "Majhna ponižanja lahko zabolijo bolj, kot si mislimo. Tudi če se vam mudi, lahko izberete odziv, ki ne razvrednoti drugega. Sočutje ne zahteva dodatnega časa—zahteva spoštovanje.",
+                                feedback: "Majhna ponižanja lahko zabolijo bolj, kot si mislimo. Tudi če se vam mudi, lahko izberete odziv, ki ne razvrednoti drugega. Sočutje ne zahteva dodatnega časa - zahteva spoštovanje.",
                                 type: "negative"
                             }
                         ]
@@ -2745,16 +2716,16 @@
                     {
                         character: "🏠",
                         name: "Pasivno-agresiven sosed",
-                        situation: "Sosed vam pusti listek, da ste menda zaradi hrupa neuvidevni. Ton je pasivno-agresiven in počutite se obtožene.",
+                        situation: "Soseda vam pusti listek, da ste menda zaradi hrupa neuvidevni. Ton je pasivno-agresiven in počutite se obtožene.",
                         choices: [
                             {
-                                text: "Mirno se pogovorite, priznate vpliv in se dogovorite za jasne rešitve",
+                                text: "Mirno se pogovorite in se dogovorite za jasne rešitve",
                                 compassion: 20,
                                 feedback: "Niste se sesuli v krivdo niti napadli nazaj. Združili ste empatijo in meje. Mnogi konflikti nastanejo iz stresa in domnev; spoštljiv pogovor lahko povrne občutek varnosti na obeh straneh.",
                                 type: "positive"
                             },
                             {
-                                text: "Izogibate se mu in poskusite biti tišji, brez pogovora",
+                                text: "Izogibate se ji in poskušate biti tišji, brez pogovora",
                                 compassion: 6,
                                 feedback: "Zmanjšali ste vpliv, a odnos ostane napet. Umik lahko kratkoročno zaščiti, a tudi ohranja tesnobo. Včasih sočutje pomeni jasno, mirno komunikacijo.",
                                 type: "neutral"
@@ -2762,7 +2733,7 @@
                             {
                                 text: "Odgovorite s sarkazmom in namenoma delate hrup",
                                 compassion: -6,
-                                feedback: "Maščevanje majhen konflikt spremeni v dolgotrajen stres. Tudi če njegov pristop ni bil pravičen, vi imate nadzor nad svojim odzivom. Sočutje ščiti tudi vaš prihodnji mir.",
+                                feedback: "Maščevanje majhen konflikt spremeni v dolgotrajen stres. Tudi če njen pristop ni bil pravičen, imate vi nadzor nad svojim odzivom. Sočutje ščiti tudi vaš prihodnji mir.",
                                 type: "negative"
                             }
                         ]
@@ -2787,7 +2758,7 @@
                             {
                                 text: "Pošljete sporočilo, ki vzbuja krivdo, kako neuvideven je",
                                 compassion: -4,
-                                feedback: "Občutek prizadetosti je legitimen, a krivda redko popravi bližino. Neposredna, mirna meja je bolj sočutna kot pikra opazka. Sočutje je lahko iskreno in spoštljivo.",
+                                feedback: "Občutek prizadetosti je legitimen, a krivda redko popravi bližino. Neposredna, mirna meja je bolj sočutna kot pikra opazka. Sočutje se lahko izraža kot dejanje iskrenosti in spoštljivosti.",
                                 type: "negative"
                             }
                         ]
@@ -2838,6 +2809,31 @@
                                 text: "Pridružite se pritoževanju, ker ste naveličani čakati",
                                 compassion: -4,
                                 feedback: "Skupinska nestrpnost je lahko videti normalna, a lahko tudi sramoti nekoga, ki se že trudi. Sočutje prosi za premor in opomnik: redko poznamo celotno zgodbo.",
+                                type: "negative"
+                            }
+                        ]
+                    },
+                    {
+                        character: "✉️",
+                        name: "Oster e-mail",
+                        situation: "Dobite kratko, ostro elektronsko sporočilo, kjer vas okrivijo za zamudo: »To bi moralo biti že zdavnaj opravljeno. Nemudoma uredi.« V trebuhu vas stisne in postanete obrambni.",
+                        choices: [
+                            {
+                                text: "Naredite premor, mirno vprašate za podrobnosti in razjasnite naslednje korake - brez opravičevanja za stvari, ki jih niste povzročili",
+                                compassion: 18,
+                                feedback: "Odgovorili ste jasno in z mejami, namesto iz jeze. Pošiljatelj je lahko pod pritiskom, a to ne pomeni, da morate sprejeti krivdo brez konteksta. Sočutje tu pomeni ohraniti spoštovanje in hkrati zaščititi svoje dostojanstvo.",
+                                type: "positive"
+                            },
+                            {
+                                text: "Kratko odpišete »Ok« in se lotite dela, medtem ko v sebi čutite zamero",
+                                compassion: 6,
+                                feedback: "Delo ste premaknili naprej, a zamera ostane v telesu. Včasih najbolj sočutna izbira vključuje kratko razjasnitev, da ne nosite nepotrebne krivde ali nejasnosti.",
+                                type: "neutral"
+                            },
+                            {
+                                text: "Ostro odpišete nazaj in naštejete, kaj vse so oni naredili narobe",
+                                compassion: -4,
+                                feedback: "Razumljivo je, da se želite braniti, a spirala obtoževanja navadno eskalira. Sočutje ne pomeni pasivnosti - pomeni izbrati komunikacijo, ki zmanjša škodo in poveča možnost rešitve.",
                                 type: "negative"
                             }
                         ]
