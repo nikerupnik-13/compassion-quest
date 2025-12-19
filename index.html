@@ -1041,7 +1041,9 @@
         let livesTouched = 0;
         let currentScenario = 0;
         let gameScenarios = [];
-        let selfCompassionExercise = 0; // 0 = not started, 1 = breathing, 2 = letter, 3 = gratitude, 4 = mantra
+        let selfCompassionExercise = 0; // 0 = not started, 1 = breathing, 2..4 = random self-compassion exercises
+        let selectedSelfCompassionExercises = [];
+        let currentSelfCompassionIndex = 0; // 0..2 within selectedSelfCompassionExercises
         let quizActive = false;
         let quizProgress = 0; // 0 = not started, 1 = completed
         // Load saved language preference or default to Slovenian
@@ -1206,6 +1208,30 @@
                 },
                 transitionToSelfCompassion: "Now, let's turn that compassion inward. It's time to practice self-compassion.",
                 selfCompassionPartTitle: "Self-Compassion Practice",
+                supportiveTouchTitle: "Supportive Touch",
+                supportiveTouchDescription: "Place a hand on your heart (or another comforting place) and take one slow breath. Notice what it feels like to offer yourself support.",
+                supportiveTouchActionBtn: "Place hand and breathe",
+                selfCompassionBreakTitle: "Self-Compassion Pause",
+                selfCompassionBreakStep1: "1) Notice: This is a moment of difficulty.",
+                selfCompassionBreakStep2: "2) Common humanity: Struggle is part of being human.",
+                selfCompassionBreakStep3: "3) Kindness: May I be kind to myself right now.",
+                selfCompassionBreakNextBtn: "Next",
+                permissionSlipTitle: "Permission Slip",
+                permissionSlipDescription: "Choose one sentence to give yourself permission today:",
+                permissionSlipOption1: "It's okay to take my time.",
+                permissionSlipOption2: "A small step is enough for today.",
+                permissionSlipOption3: "I don't have to be perfect.",
+                permissionSlipOption4: "I can ask for help.",
+                innerCriticTitle: "Gentle Reframe",
+                innerCriticDescription: "Choose the kinder response to this inner-critic thought:",
+                innerCriticThought: "“I'm not doing enough.”",
+                innerCriticOption1: "I'm doing what I can, step by step.",
+                innerCriticOption2: "It's okay to rest—rest helps me continue.",
+                innerCriticOption3: "I can be imperfect and still worthy.",
+                microGratitudeSelfTitle: "One Thing I Appreciate About Myself",
+                microGratitudeSelfDescription: "Write one small thing you appreciate about yourself today. It can be as simple as showing up.",
+                microGratitudeSelfPlaceholder: "Today I appreciate that I...",
+                microGratitudeSelfContinueBtn: "Continue",
                 letterExerciseTitle: "Write a Letter to Yourself",
                 letterExerciseDescription: "Take a moment and write a compassionate letter to yourself. Think about a challenge you're facing or something you've been hard on yourself about. Write to yourself as you would write to a dear person—with kindness, understanding, and support.",
                 letterPlaceholder: "Write your letter here...",
@@ -1305,6 +1331,30 @@
                 },
                 transitionToSelfCompassion: "Zdaj pa obrnimo to sočutje navznoter. Čas je za vadbo samosočutja.",
                 selfCompassionPartTitle: "Vadba samosočutja",
+                supportiveTouchTitle: "Podporen dotik",
+                supportiveTouchDescription: "Položite roko na srce (ali drug prijeten del telesa) in naredite en počasen vdih. Opazite, kako je, ko si ponudite podporo.",
+                supportiveTouchActionBtn: "Položi roko in vdihni",
+                selfCompassionBreakTitle: "Samosočutni premor",
+                selfCompassionBreakStep1: "1) Opazim: To je težek trenutek.",
+                selfCompassionBreakStep2: "2) Skupna človeškost: Trpljenje je del človeške izkušnje.",
+                selfCompassionBreakStep3: "3) Prijaznost: Naj bom do sebe zdaj prijazna/prijazen.",
+                selfCompassionBreakNextBtn: "Naprej",
+                permissionSlipTitle: "Permisijski listek",
+                permissionSlipDescription: "Izberi stavek, s katerim si danes daš dovoljenje:",
+                permissionSlipOption1: "V redu je, če si vzamem čas.",
+                permissionSlipOption2: "Dovolj je, da naredim majhen korak.",
+                permissionSlipOption3: "Ni mi treba biti popolna/popoln.",
+                permissionSlipOption4: "Lahko prosim za pomoč.",
+                innerCriticTitle: "Nežen preobrat",
+                innerCriticDescription: "Izberi bolj sočuten odziv na misel notranjega kritika:",
+                innerCriticThought: "»Ne delam dovolj.«",
+                innerCriticOption1: "Delam, kolikor zmorem — korak za korakom.",
+                innerCriticOption2: "V redu je, če počivam — počitek mi pomaga nadaljevati.",
+                innerCriticOption3: "Lahko sem nepopolna/nepopoln in še vedno vredna/vreden.",
+                microGratitudeSelfTitle: "Ena stvar, ki jo cenim pri sebi",
+                microGratitudeSelfDescription: "Zapiši eno majhno stvar, ki jo danes ceniš pri sebi. Lahko je čisto preprosta.",
+                microGratitudeSelfPlaceholder: "Danes cenim pri sebi, da ...",
+                microGratitudeSelfContinueBtn: "Nadaljuj",
                 letterExerciseTitle: "Napišite pismo samemu sebi",
                 letterExerciseDescription: "Vzemite si trenutek in napišite sočutno pismo samemu sebi. Pomislite na izziv, s katerim se soočate, ali na nekaj, zaradi česar ste bili strogi do sebe. Pišite sebi, kot bi pisali dragi osebi - s prijaznostjo, razumevanjem in podporo.",
                 letterPlaceholder: "Napišite svoje pismo tukaj...",
@@ -2356,6 +2406,88 @@
             return shuffled;
         }
 
+        const selfCompassionExercisePool = [
+            // Existing writing exercises (text)
+            {
+                id: 'letter',
+                type: 'text',
+                titleKey: 'letterExerciseTitle',
+                descriptionKey: 'letterExerciseDescription',
+                placeholderKey: 'letterPlaceholder',
+                pointsFull: 15,
+                pointsEmpty: 5,
+                continueKey: 'letterContinueBtn'
+            },
+            {
+                id: 'gratitude',
+                type: 'text',
+                titleKey: 'gratitudeExerciseTitle',
+                descriptionKey: 'gratitudeExerciseDescription',
+                placeholderKey: 'gratitudePlaceholder',
+                pointsFull: 15,
+                pointsEmpty: 5,
+                continueKey: 'gratitudeContinueBtn'
+            },
+            {
+                id: 'mantra',
+                type: 'text',
+                titleKey: 'mantraExerciseTitle',
+                descriptionKey: 'mantraExerciseDescription',
+                placeholderKey: 'mantraPlaceholder',
+                pointsFull: 15,
+                pointsEmpty: 5,
+                continueKey: 'mantraContinueBtn'
+            },
+            // New exercises (mixed)
+            {
+                id: 'supportive_touch',
+                type: 'tap',
+                titleKey: 'supportiveTouchTitle',
+                descriptionKey: 'supportiveTouchDescription',
+                actionBtnKey: 'supportiveTouchActionBtn',
+                points: 10
+            },
+            {
+                id: 'self_compassion_break',
+                type: 'step',
+                titleKey: 'selfCompassionBreakTitle',
+                stepsKeys: ['selfCompassionBreakStep1', 'selfCompassionBreakStep2', 'selfCompassionBreakStep3'],
+                nextBtnKey: 'selfCompassionBreakNextBtn',
+                points: 10
+            },
+            {
+                id: 'permission_slip',
+                type: 'choice',
+                titleKey: 'permissionSlipTitle',
+                descriptionKey: 'permissionSlipDescription',
+                optionsKeys: ['permissionSlipOption1', 'permissionSlipOption2', 'permissionSlipOption3', 'permissionSlipOption4'],
+                points: 10
+            },
+            {
+                id: 'inner_critic_reframe',
+                type: 'choice',
+                titleKey: 'innerCriticTitle',
+                descriptionKey: 'innerCriticDescription',
+                thoughtKey: 'innerCriticThought',
+                optionsKeys: ['innerCriticOption1', 'innerCriticOption2', 'innerCriticOption3'],
+                points: 10
+            },
+            {
+                id: 'micro_gratitude_self',
+                type: 'text',
+                titleKey: 'microGratitudeSelfTitle',
+                descriptionKey: 'microGratitudeSelfDescription',
+                placeholderKey: 'microGratitudeSelfPlaceholder',
+                pointsFull: 10,
+                pointsEmpty: 5,
+                continueKey: 'microGratitudeSelfContinueBtn'
+            }
+        ];
+
+        function pickRandomSelfCompassionExercises(count) {
+            return shuffleArray([...selfCompassionExercisePool]).slice(0, count);
+        }
+
         function initGame() {
             compassionScore = 0;
             livesTouched = 0;
@@ -2544,6 +2676,11 @@
             
             // Reset progress bar for self-compassion exercises (0% - not started yet)
             selfCompassionExercise = 0;
+            quizActive = false;
+            quizProgress = 0;
+            // Pick 3 random self-compassion exercises (breathing is always first)
+            selectedSelfCompassionExercises = pickRandomSelfCompassionExercises(3);
+            currentSelfCompassionIndex = 0;
             updateProgress();
             updateStats(); // Update stats to show exercises instead of scenario
             
@@ -2741,8 +2878,8 @@
             }
             
             document.getElementById('breathingExercise').classList.add('hidden');
-            // After breathing exercise, show letter exercise
-            showLetterExercise();
+            // After breathing exercise, show a random self-compassion exercise
+            showNextSelfCompassionExercise();
         }
 
         function skipBreathingExercise() {
@@ -2773,7 +2910,195 @@
                 <div class="feedback positive" style="margin-top: 20px;">
                     <div style="margin-top: 10px;">+10 ${t.points}</div>
                 </div>
-                <button class="start-game-btn" onclick="showLetterExercise()" style="margin-top: 20px;">${t.breathingSkipContinue}</button>
+                <button class="start-game-btn" onclick="continueAfterBreathing()" style="margin-top: 20px;">${t.breathingSkipContinue}</button>
+            `;
+        }
+
+        let activeSelfCompassionStepIndex = 0;
+
+        function showNextSelfCompassionExercise() {
+            const t = translations[currentLanguage];
+
+            // Safety: if something cleared selection, recreate it
+            if (!Array.isArray(selectedSelfCompassionExercises) || selectedSelfCompassionExercises.length !== 3) {
+                selectedSelfCompassionExercises = pickRandomSelfCompassionExercises(3);
+            }
+            if (currentSelfCompassionIndex < 0) currentSelfCompassionIndex = 0;
+
+            const ex = selectedSelfCompassionExercises[currentSelfCompassionIndex];
+            if (!ex) {
+                // No more exercises; go to quiz
+                showSelfCompassionEndBeforeQuiz();
+                return;
+            }
+
+            // Hide all other sections
+            document.getElementById('scenario').classList.add('hidden');
+            document.getElementById('scenariosComplete').classList.add('hidden');
+            document.getElementById('selfCompassionTransition').classList.add('hidden');
+            document.getElementById('selfCompassionSection').classList.add('hidden');
+            document.getElementById('breathingExercise').classList.add('hidden');
+            document.getElementById('gratitudeExercise').classList.add('hidden');
+            document.getElementById('mantraExercise').classList.add('hidden');
+            document.getElementById('compassionQuiz').classList.add('hidden');
+            document.getElementById('letterExercise').classList.remove('hidden');
+
+            // Mark self-compassion exercise step (2..4)
+            selfCompassionExercise = Math.min(4, 2 + currentSelfCompassionIndex);
+            updateProgress();
+            updateStats();
+
+            const container = document.getElementById('letterExercise');
+            const title = t[ex.titleKey] || '';
+
+            if (ex.type === 'text') {
+                const description = t[ex.descriptionKey] || '';
+                const placeholder = t[ex.placeholderKey] || '';
+                const btnText = t[ex.continueKey] || t.startGame;
+                container.innerHTML = `
+                    <h2>${title}</h2>
+                    <div class="exercise-description">
+                        <p>${description}</p>
+                    </div>
+                    <textarea class="exercise-textarea" id="selfCompassionText" placeholder="${placeholder}"></textarea>
+                    <button class="start-game-btn" onclick="completeCurrentSelfCompassionText()">${btnText}</button>
+                `;
+                return;
+            }
+
+            if (ex.type === 'tap') {
+                const description = t[ex.descriptionKey] || '';
+                const actionBtn = t[ex.actionBtnKey] || t.startGame;
+                container.innerHTML = `
+                    <h2>${title}</h2>
+                    <div class="exercise-description">
+                        <p>${description}</p>
+                    </div>
+                    <button class="start-game-btn" onclick="completeCurrentSelfCompassionFixed(${ex.points})">${actionBtn}</button>
+                `;
+                return;
+            }
+
+            if (ex.type === 'choice') {
+                const description = t[ex.descriptionKey] || '';
+                const thought = ex.thoughtKey ? (t[ex.thoughtKey] || '') : '';
+                const options = (ex.optionsKeys || []).map((k) => t[k]).filter(Boolean);
+                container.innerHTML = `
+                    <h2>${title}</h2>
+                    <div class="exercise-description">
+                        ${description ? `<p>${description}</p>` : ''}
+                        ${thought ? `<p style="margin-top: 10px; font-weight: bold;">${thought}</p>` : ''}
+                    </div>
+                    <div class="choices">
+                        ${options.map((opt, i) => `<button class="choice-btn" onclick="completeCurrentSelfCompassionFixed(${ex.points})">${opt}</button>`).join('')}
+                    </div>
+                `;
+                return;
+            }
+
+            if (ex.type === 'step') {
+                activeSelfCompassionStepIndex = 0;
+                const steps = (ex.stepsKeys || []).map((k) => t[k]).filter(Boolean);
+                const nextBtn = t[ex.nextBtnKey] || t.ok;
+                container.innerHTML = `
+                    <h2>${title}</h2>
+                    <div class="exercise-description">
+                        <p id="selfCompassionStepText">${steps[0] || ''}</p>
+                    </div>
+                    <button class="start-game-btn" onclick="advanceSelfCompassionStep()">${nextBtn}</button>
+                `;
+                return;
+            }
+        }
+
+        function completeCurrentSelfCompassionText() {
+            const ex = selectedSelfCompassionExercises[currentSelfCompassionIndex];
+            if (!ex || ex.type !== 'text') return;
+
+            const t = translations[currentLanguage];
+            const text = document.getElementById('selfCompassionText')?.value ?? '';
+            const hasText = text.trim().length > 0;
+            const pointsEarned = hasText ? ex.pointsFull : ex.pointsEmpty;
+            compassionScore += pointsEarned;
+            updateStats();
+
+            showSelfCompassionExerciseComplete(hasText ? t.exerciseComplete : t.exerciseCompleteMental, pointsEarned);
+        }
+
+        function completeCurrentSelfCompassionFixed(pointsEarned) {
+            const t = translations[currentLanguage];
+            compassionScore += pointsEarned;
+            updateStats();
+            showSelfCompassionExerciseComplete(t.exerciseComplete, pointsEarned);
+        }
+
+        function advanceSelfCompassionStep() {
+            const ex = selectedSelfCompassionExercises[currentSelfCompassionIndex];
+            if (!ex || ex.type !== 'step') return;
+            const t = translations[currentLanguage];
+            const steps = (ex.stepsKeys || []).map((k) => t[k]).filter(Boolean);
+
+            activeSelfCompassionStepIndex++;
+            if (activeSelfCompassionStepIndex >= steps.length) {
+                completeCurrentSelfCompassionFixed(ex.points);
+                return;
+            }
+
+            const stepEl = document.getElementById('selfCompassionStepText');
+            if (stepEl) stepEl.textContent = steps[activeSelfCompassionStepIndex] || '';
+        }
+
+        function showSelfCompassionExerciseComplete(message, pointsEarned) {
+            const t = translations[currentLanguage];
+            const container = document.getElementById('letterExercise');
+
+            const ex = selectedSelfCompassionExercises[currentSelfCompassionIndex];
+            const title = ex && ex.titleKey && t[ex.titleKey] ? t[ex.titleKey] : t.selfCompassionPartTitle;
+            const isLast = currentSelfCompassionIndex >= 2;
+            const nextLabel = isLast ? t.continueToQuizBtn : (t.breathingContinueBtn || t.startGame);
+            const nextOnClick = isLast ? 'showSelfCompassionEndBeforeQuiz()' : 'goToNextSelfCompassionExercise()';
+
+            container.innerHTML = `
+                <h2>${title}</h2>
+                <div class="breathing-complete">
+                    <strong>${message}</strong>
+                </div>
+                <div class="feedback positive" style="margin-top: 20px;">
+                    <div style="margin-top: 10px;">+${pointsEarned} ${t.points}</div>
+                </div>
+                <button class="start-game-btn" onclick="${nextOnClick}" style="margin-top: 20px;">${nextLabel}</button>
+            `;
+        }
+
+        function goToNextSelfCompassionExercise() {
+            currentSelfCompassionIndex++;
+            showNextSelfCompassionExercise();
+        }
+
+        function showSelfCompassionEndBeforeQuiz() {
+            const t = translations[currentLanguage];
+
+            // Finish exercises (4/4)
+            selfCompassionExercise = 4;
+            // Count your own life once at the end of self-compassion section
+            livesTouched++;
+
+            // Reset progress for the quiz phase (0% until quiz submit)
+            quizActive = true;
+            quizProgress = 0;
+            updateStats();
+            updateProgress();
+
+            const container = document.getElementById('letterExercise');
+            container.innerHTML = `
+                <h2>${t.selfCompassionPartTitle}</h2>
+                <div class="breathing-complete">
+                    <strong>${t.exerciseComplete}</strong>
+                </div>
+                <div class="feedback positive" style="margin-top: 20px;">
+                    <div style="margin-top: 5px;">+1 ${t.livesTouched}</div>
+                </div>
+                <button class="start-game-btn" onclick="showCompassionQuiz()" style="margin-top: 20px;">${t.continueToQuizBtn}</button>
             `;
         }
 
