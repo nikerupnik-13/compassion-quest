@@ -2900,7 +2900,7 @@
 
         function showScenario() {
             if (currentScenario >= gameScenarios.length) {
-                endGame();
+                showScenariosComplete();
                 return;
             }
 
@@ -2992,8 +2992,8 @@
 
         function nextScenario() {
             currentScenario++;
-            // After 8 scenarios (currentScenario === 8 means we've done 0-7, now showing completion)
-            if (currentScenario === 8) {
+            // After the last scenario, show completion screen before self-compassion section
+            if (currentScenario >= gameScenarios.length) {
                 showScenariosComplete();
             } else {
                 showScenario();
