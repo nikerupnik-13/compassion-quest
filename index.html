@@ -956,11 +956,11 @@
             </div>
             <div class="stat-item" id="scenarioStat">
                 <div class="stat-label" id="statScenario">Scenario</div>
-                <div class="stat-value" id="scenarioNumber">1/8</div>
+                <div class="stat-value" id="scenarioNumber">1/5</div>
             </div>
             <div class="stat-item" id="exercisesStat">
                 <div class="stat-label" id="statExercises">Exercises</div>
-                <div class="stat-value" id="exercisesNumber">0/4</div>
+                <div class="stat-value" id="exercisesNumber">0/3</div>
             </div>
             <div class="stat-item" id="quizStat">
                 <div class="stat-label" id="statQuiz">Test</div>
@@ -1041,14 +1041,14 @@
         let livesTouched = 0;
         let currentScenario = 0;
         let gameScenarios = [];
-        let selfCompassionExercise = 0; // 0 = not started, 1 = breathing, 2..4 = random self-compassion exercises
+        let selfCompassionExercise = 0; // 0 = not started, 1 = breathing, 2..3 = random self-compassion exercises
         let selectedSelfCompassionExercises = [];
-        let currentSelfCompassionIndex = 0; // 0..2 within selectedSelfCompassionExercises
+        let currentSelfCompassionIndex = 0; // 0..1 within selectedSelfCompassionExercises
         let quizActive = false;
         let quizProgress = 0; // 0 = not started, 1 = completed
         // Load saved language preference or default to Slovenian
         let currentLanguage = localStorage.getItem('compassionQuestLanguage') || 'sl';
-        const SCENARIOS_PER_GAME = 8;
+        const SCENARIOS_PER_GAME = 5;
 
         // Compassion Quiz Data
         const compassionQuizData = {
@@ -1166,7 +1166,7 @@
                     "Makes the world a kinder, more inclusive place for everyone"
                 ],
                 tutorialHowTitle: "How to Play",
-                tutorialHowText: "You'll go through 8 different scenarios where someone needs help or understanding. Read each situation carefully and choose the response that shows the most compassion—your choices affect your Compassion Score and the number of Lives Touched. After the scenarios, you'll complete 4 self-compassion exercises, and then finish with a short final quiz to reflect on what you learned. Follow the progress bar and stats at the top as you move through each part of the journey.",
+                tutorialHowText: "You'll go through 5 different scenarios where someone needs help or understanding. Read each situation carefully and choose the response that shows the most compassion—your choices affect your Compassion Score and the number of Lives Touched. After the scenarios, you'll complete 3 self-compassion exercises (breathing first, then two quick exercises), and then finish with a short final quiz to reflect on what you learned. Follow the progress bar and stats at the top as you move through each part of the journey.",
                 startGame: "Start Your Journey",
                 selfCompassionTitle: "Self-Compassion: Caring for Yourself",
                 selfCompassionWhat: "Self-compassion is the practice of treating yourself with the same kindness, understanding, and care that you would offer to a good friend. It involves recognizing your own suffering, understanding that imperfection is part of the human experience, and responding to yourself with warmth and support rather than harsh self-criticism.",
@@ -1289,7 +1289,7 @@
                     "Naredi svet prijaznejši, bolj vključujoč prostor za vse"
                 ],
                 tutorialHowTitle: "Kako igrati",
-                tutorialHowText: "Srečali boste 8 različnih scenarijev, kjer nekdo potrebuje pomoč ali razumevanje. Preberite vsako situacijo skrbno in izberite odziv, ki izraža največ sočutja - vaše izbire vplivajo na točke sočutja in število dotaknjenih življenj. Po scenarijih boste opravili 4 vaje samosočutja, na koncu pa še kratek test, kjer preverite, kaj ste se naučili. Spremljajte vrstico napredka in statistiko na vrhu, da vidite, v katerem delu poti ste.",
+                tutorialHowText: "Srečali boste 5 različnih scenarijev, kjer nekdo potrebuje pomoč ali razumevanje. Preberite vsako situacijo skrbno in izberite odziv, ki izraža največ sočutja - vaše izbire vplivajo na točke sočutja in število dotaknjenih življenj. Po scenarijih boste opravili 3 vaje samosočutja (najprej dihalno vajo, nato še 2 kratki vaji), na koncu pa še kratek test, kjer preverite, kaj ste se naučili. Spremljajte vrstico napredka in statistiko na vrhu, da vidite, v katerem delu poti ste.",
                 startGame: "Začnite svojo pot",
                 selfCompassionTitle: "Samosočutje: skrb zase",
                 selfCompassionWhat: "Samosočutje je praksa, kjer se do sebe obnašate z enako prijaznostjo, razumevanjem in skrbjo, kot bi se do dobrega prijatelja. Vključuje prepoznavanje lastnega trpljenja in razumevanje, da je nepopolnost del človeške izkušnje. Samosočutje je odzivanje nase s toplino in podporo, v nasprotju s strogo samokritičnostjo.",
@@ -2888,7 +2888,7 @@
             quizActive = false;
             quizProgress = 0;
             document.getElementById('scenarioNumber').textContent = `1/${SCENARIOS_PER_GAME}`;
-            document.getElementById('exercisesNumber').textContent = `0/4`;
+            document.getElementById('exercisesNumber').textContent = `0/3`;
             document.getElementById('quizNumber').textContent = `0/1`;
             document.getElementById('compassionQuiz').classList.add('hidden');
             // Randomize scenarios and select the number for this game
@@ -3070,8 +3070,8 @@
             selfCompassionExercise = 0;
             quizActive = false;
             quizProgress = 0;
-            // Pick 3 random self-compassion exercises (breathing is always first)
-            selectedSelfCompassionExercises = pickRandomSelfCompassionExercises(3);
+            // Pick 2 random self-compassion exercises (breathing is always first)
+            selectedSelfCompassionExercises = pickRandomSelfCompassionExercises(2);
             currentSelfCompassionIndex = 0;
             updateProgress();
             updateStats(); // Update stats to show exercises instead of scenario
@@ -3312,8 +3312,8 @@
             const t = translations[currentLanguage];
 
             // Safety: if something cleared selection, recreate it
-            if (!Array.isArray(selectedSelfCompassionExercises) || selectedSelfCompassionExercises.length !== 3) {
-                selectedSelfCompassionExercises = pickRandomSelfCompassionExercises(3);
+            if (!Array.isArray(selectedSelfCompassionExercises) || selectedSelfCompassionExercises.length !== 2) {
+                selectedSelfCompassionExercises = pickRandomSelfCompassionExercises(2);
             }
             if (currentSelfCompassionIndex < 0) currentSelfCompassionIndex = 0;
 
@@ -3335,8 +3335,8 @@
             document.getElementById('compassionQuiz').classList.add('hidden');
             document.getElementById('letterExercise').classList.remove('hidden');
 
-            // Mark self-compassion exercise step (2..4)
-            selfCompassionExercise = Math.min(4, 2 + currentSelfCompassionIndex);
+            // Mark self-compassion exercise step (2..3)
+            selfCompassionExercise = Math.min(3, 2 + currentSelfCompassionIndex);
             updateProgress();
             updateStats();
 
@@ -3446,7 +3446,7 @@
 
             const ex = selectedSelfCompassionExercises[currentSelfCompassionIndex];
             const title = ex && ex.titleKey && t[ex.titleKey] ? t[ex.titleKey] : t.selfCompassionPartTitle;
-            const isLast = currentSelfCompassionIndex >= 2;
+            const isLast = currentSelfCompassionIndex >= 1;
             const nextLabel = isLast ? t.continueToQuizBtn : (t.breathingContinueBtn || t.startGame);
             const nextOnClick = isLast ? 'showSelfCompassionEndBeforeQuiz()' : 'goToNextSelfCompassionExercise()';
 
@@ -3470,8 +3470,8 @@
         function showSelfCompassionEndBeforeQuiz() {
             const t = translations[currentLanguage];
 
-            // Finish exercises (4/4)
-            selfCompassionExercise = 4;
+            // Finish exercises (3/3)
+            selfCompassionExercise = 3;
             // Count your own life once at the end of self-compassion section
             livesTouched++;
 
@@ -3710,7 +3710,7 @@
                 : `${currentScenario + 1}/${totalScenarios}`;
             document.getElementById('scenarioNumber').textContent = scenarioDisplay;
 
-            document.getElementById('exercisesNumber').textContent = `${Math.min(selfCompassionExercise, 4)}/4`;
+            document.getElementById('exercisesNumber').textContent = `${Math.min(selfCompassionExercise, 3)}/3`;
             document.getElementById('quizNumber').textContent = `${quizProgress}/1`;
         }
 
@@ -3734,8 +3734,8 @@
                     // At intro screen, show 0% (just started self-compassion)
                     progress = 0;
                 } else {
-                    // Progress through 4 self-compassion exercises (1, 2, 3, 4)
-                    const totalExercises = 4;
+                    // Progress through 3 self-compassion exercises (1, 2, 3)
+                    const totalExercises = 3;
                     progress = (selfCompassionExercise / totalExercises) * 100;
                 }
             } else {
