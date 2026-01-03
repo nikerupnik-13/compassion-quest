@@ -1044,6 +1044,7 @@
         let selfCompassionExercise = 0; // 0 = not started, 1 = breathing, 2 = one random self-compassion exercise
         let selectedSelfCompassionExercises = [];
         let currentSelfCompassionIndex = 0; // 0..0 within selectedSelfCompassionExercises
+        let selfCompassionLifeCounted = false; // Count your own life once after self-compassion
         let quizActive = false;
         let quizProgress = 0; // 0 = not started, 1 = completed
         // Load saved language preference or default to Slovenian
@@ -2897,6 +2898,7 @@
             livesTouched = 0;
             currentScenario = 0;
             selfCompassionExercise = 0;
+            selfCompassionLifeCounted = false;
             quizActive = false;
             quizProgress = 0;
             document.getElementById('scenarioNumber').textContent = `1/${SCENARIOS_PER_GAME}`;
@@ -2912,7 +2914,8 @@
 
         function showScenario() {
             if (currentScenario >= gameScenarios.length) {
-                showScenariosComplete();
+                // Skip extra transition screens; go straight to self-compassion
+                showSelfCompassionIntro();
                 return;
             }
 
@@ -3004,9 +3007,9 @@
 
         function nextScenario() {
             currentScenario++;
-            // After the last scenario, show completion screen before self-compassion section
             if (currentScenario >= gameScenarios.length) {
-                showScenariosComplete();
+                // Skip extra transition screens; go straight to self-compassion
+                showSelfCompassionIntro();
             } else {
                 showScenario();
             }
@@ -3037,7 +3040,7 @@
                 <div class="result-box">
                     <p style="font-size: 1.2em; margin-bottom: 20px;">${message}</p>
                 </div>
-                <button class="start-game-btn" onclick="showSelfCompassionTransition()">${t.transitionToSelfCompassion}</button>
+                <button class="start-game-btn" onclick="showSelfCompassionIntro()">${t.transitionToSelfCompassion}</button>
             `;
         }
 
@@ -3080,6 +3083,7 @@
             
             // Reset progress bar for self-compassion exercises (0% - not started yet)
             selfCompassionExercise = 0;
+            selfCompassionLifeCounted = false;
             quizActive = false;
             quizProgress = 0;
             // Pick 1 random self-compassion exercise (breathing is always first)
@@ -3458,9 +3462,23 @@
 
             const ex = selectedSelfCompassionExercises[currentSelfCompassionIndex];
             const title = ex && ex.titleKey && t[ex.titleKey] ? t[ex.titleKey] : t.selfCompassionPartTitle;
-            const isLast = currentSelfCompassionIndex >= 0;
+            const totalRandom = Array.isArray(selectedSelfCompassionExercises) ? selectedSelfCompassionExercises.length : 0;
+            const isLast = totalRandom === 0 ? true : (currentSelfCompassionIndex >= totalRandom - 1);
+
+            // If this is the final self-compassion exercise, count your own life once and prepare quiz immediately
+            if (isLast && !selfCompassionLifeCounted) {
+                selfCompassionExercise = 2; // 2/2 complete (breathing + 1 random)
+                livesTouched++;
+                selfCompassionLifeCounted = true;
+                quizActive = true;
+                quizProgress = 0;
+                updateStats();
+                updateProgress();
+            }
+
             const nextLabel = isLast ? t.continueToQuizBtn : (t.breathingContinueBtn || t.startGame);
-            const nextOnClick = isLast ? 'showSelfCompassionEndBeforeQuiz()' : 'goToNextSelfCompassionExercise()';
+            const nextOnClick = isLast ? 'showCompassionQuiz()' : 'goToNextSelfCompassionExercise()';
+            const livesLine = isLast ? `<div style="margin-top: 5px;">+1 ${formatLivesTouchedCount(1)}</div>` : '';
 
             container.innerHTML = `
                 <h2>${title}</h2>
@@ -3469,6 +3487,7 @@
                 </div>
                 <div class="feedback positive" style="margin-top: 20px;">
                     <div style="margin-top: 10px;">+${pointsEarned} ${t.points}</div>
+                    ${livesLine}
                 </div>
                 <button class="start-game-btn" onclick="${nextOnClick}" style="margin-top: 20px;">${nextLabel}</button>
             `;
