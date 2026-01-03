@@ -2809,9 +2809,10 @@
         function formatLivesTouchedCount(n) {
             const t = translations[currentLanguage];
             if (currentLanguage === 'sl') {
-                if (n === 1) return 'dotaknjeno življenje';
-                if (n === 2) return 'dotaknjeni življenji';
-                return 'dotaknjena življenja';
+                if (n === 1) return 'Dotaknjeno življenje';
+                if (n === 2) return 'Dotaknjeni življenji';
+                // 3+ uses genitive plural in Slovene
+                return 'Dotaknjenih življenj';
             }
             // English and others: keep existing label
             return t.livesTouched;
