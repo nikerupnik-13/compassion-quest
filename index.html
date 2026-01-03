@@ -2914,8 +2914,8 @@
 
         function showScenario() {
             if (currentScenario >= gameScenarios.length) {
-                // Skip extra transition screens; go straight to self-compassion
-                showSelfCompassionIntro();
+                // Show a single transition screen after scenarios
+                showScenariosComplete();
                 return;
             }
 
@@ -3008,8 +3008,8 @@
         function nextScenario() {
             currentScenario++;
             if (currentScenario >= gameScenarios.length) {
-                // Skip extra transition screens; go straight to self-compassion
-                showSelfCompassionIntro();
+                // Show a single transition screen after scenarios
+                showScenariosComplete();
             } else {
                 showScenario();
             }
