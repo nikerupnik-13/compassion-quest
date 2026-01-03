@@ -2806,6 +2806,17 @@
             return shuffled;
         }
 
+        function formatLivesTouchedCount(n) {
+            const t = translations[currentLanguage];
+            if (currentLanguage === 'sl') {
+                if (n === 1) return 'dotaknjeno življenje';
+                if (n === 2) return 'dotaknjeni življenji';
+                return 'dotaknjena življenja';
+            }
+            // English and others: keep existing label
+            return t.livesTouched;
+        }
+
         const selfCompassionExercisePool = [
             // Existing writing exercises (text)
             {
@@ -2982,7 +2993,7 @@
                 <div class="feedback ${choice.type}">
                     <strong>${choice.feedback}</strong>
                     ${choice.compassion > 0 ? `<div style="margin-top: 10px;">+${choice.compassion} ${t.points}</div>` : ''}
-                    ${livesAdded > 0 ? `<div style="margin-top: 5px;">+${livesAdded} ${t.livesTouched}</div>` : ''}
+                    ${livesAdded > 0 ? `<div style="margin-top: 5px;">+${livesAdded} ${formatLivesTouchedCount(livesAdded)}</div>` : ''}
                     <button class="ok-btn" onclick="nextScenario()">${t.ok}</button>
                 </div>
             `;
@@ -3488,7 +3499,7 @@
                     <strong>${t.exerciseComplete}</strong>
                 </div>
                 <div class="feedback positive" style="margin-top: 20px;">
-                    <div style="margin-top: 5px;">+1 ${t.livesTouched}</div>
+                    <div style="margin-top: 5px;">+1 ${formatLivesTouchedCount(1)}</div>
                 </div>
                 <button class="start-game-btn" onclick="showCompassionQuiz()" style="margin-top: 20px;">${t.continueToQuizBtn}</button>
             `;
@@ -3652,7 +3663,7 @@
                 </div>
                 <div class="feedback positive" style="margin-top: 20px;">
                     <div style="margin-top: 10px;">+${pointsEarned} ${t.points}</div>
-                    <div style="margin-top: 5px;">+1 ${t.livesTouched}</div>
+                    <div style="margin-top: 5px;">+1 ${formatLivesTouchedCount(1)}</div>
                 </div>
                 <button class="start-game-btn" onclick="showCompassionQuiz()" style="margin-top: 20px;">${t.continueToQuizBtn}</button>
             `;
